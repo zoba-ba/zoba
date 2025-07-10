@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة تحكم مزود الخدمة | Hazzi</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --green-dark: #2F5249;
+            --green-darker: #25403A; /* درجة أغمق للأخضر */
+            --green-mid: #a7c1a8;
+            --green-mid-hover: #8ba88f; /* درجة أغمق للهوفر */
+            --green-light: #d1d8be;
+            --green-light-bg: #e0e6d5; /* درجة أفتح للخلفية الفاتحة */
+            --light-bg: #f6f6f2;
+            --text-dark: #3b3b4f;
+            --text-light: #6a6a7c; /* لون نص أخف */
+            --danger: #b94444;
+            --danger-light: #ffecec;
+            --success: #28a745; /* لون جديد للحالة "مؤكدة" */
+            --cancel: #6c757d; /* لون جديد للحالة "ملغاة" */
+
+            --sidebar-width-collapsed: 60px;
+            --sidebar-width-expanded: 220px;
+            --sidebar-padding-vertical: 20px;
+            --sidebar-border-radius: 32px;
+
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --table-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --button-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* إعادة ضبط أساسية وتحسينات للخط */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* عنوان الصفحة العلوي */
+        .page-title {
+            position: fixed;
+            top: 20px; /* زيادة بسيطة للمسافة العلوية */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.2rem; /* تكبير الخط قليلاً */
+            font-weight: 700;
+            color: var(--green-darker); /* لون أغمق قليلاً */
+            z-index: 1200;
+            user-select: none;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0); /* تدريج أبيض خفيف */
+            padding: 10px 30px; /* زيادة البادينج */
+            border-radius: 18px; /* تدوير أكثر للحواف */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* ظل أوضح */
+            max-width: 95vw; /* مساحة عرض أكبر */
+            text-align: center;
+            letter-spacing: 1px; /* تباعد أحرف خفيف */
+            border: 1px solid rgba(255, 255, 255, 0.6); /* حدود بيضاء خفيفة */
+            backdrop-filter: blur(5px); /* تأثير ضبابي خفيف */
+        }
+
+        /* تخطيط الصفحة */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 100px; /* زيادة المسافة بسبب عنوان الصفحة الثابت */
+            position: relative;
+            z-index: 1; /* التأكد من أن المحتوى أسفل العنوان الثابت */
+        }
+
+        /* القائمة الجانبية (Sidebar) */
+        .sidebar {
+            position: fixed;
+            top: 100px; /* نفس مسافة الـ page-title */
+            right: 20px; /* إبعاد عن الحافة */
+            width: var(--sidebar-width-collapsed);
+            /* background: linear-gradient(180deg, var(--green-mid) 0%, var(--green-mid-hover) 100%); تدريج أخضر متوسط */
+            border-radius: var(--sidebar-border-radius);
+            box-shadow: -5px 8px 25px rgba(0, 0, 0, 0.15); /* ظل أفضل */
+            padding: var(--sidebar-padding-vertical) 5px;
+            transition: width 0.4s ease, background 0.4s ease, padding 0.4s ease;
+            overflow: hidden;
+            z-index: 1100;
+            backdrop-filter: blur(8px); /* تأثير ضبابي أقوى */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: auto;
+            max-height: calc(100vh - 120px); /* ضبط الارتفاع */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* حدود بيضاء شفافة */
+        }
+
+        .sidebar.open {
+            width: var(--sidebar-width-expanded);
+            padding: 20px 20px 20px 25px;
+            align-items: flex-start;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: var(--white); /* لون أبيض للنص داخل الشريط عند الفتح */
+            text-decoration: none;
+            margin-bottom: 15px;
+            font-weight: 600; /* وزن خط متوسط */
+            font-size: 1rem;
+            border-radius: 12px; /* تدوير أكثر للحواف */
+            padding: 12px 16px; /* زيادة البادينج */
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            width: 100%;
+            background-color: transparent; /* خلفية شفافة في الوضع الافتراضي */
+        }
+
+        .sidebar.open a {
+            opacity: 1;
+            pointer-events: auto;
+            color: var(--text-dark); /* لون نص داكن عند الفتح */
+        }
+
+        .sidebar a:hover {
+            background-color: var(--green-light); /* لون أخضر فاتح عند الهوفر */
+            color: var(--green-dark); /* لون نص داكن عند الهوفر */
+            transform: translateX(-5px); /* حركة بسيطة عند الهوفر */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar.open a:hover {
+            background-color: var(--green-light);
+            color: var(--green-dark);
+        }
+
+
+        .sidebar a i {
+            flex-shrink: 0;
+            font-size: 1.5rem; /* تكبير الأيقونات قليلاً */
+            color: var(--white); /* لون أبيض للأيقونات في الوضع المطوي */
+            margin-left: 15px; /* زيادة المسافة */
+        }
+
+        .sidebar.open a i {
+            color: var(--green-dark); /* لون أخضر داكن للأيقونات عند الفتح */
+        }
+
+        .sidebar a:hover i {
+            color: var(--green-darker); /* لون أغمق للأيقونة عند الهوفر */
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+           left: 10px; /* تعديل المكان */
+            width: 40px; /* تكبير الزر */
+            height: 40px; /* تكبير الزر */
+            background-color: var(--green-dark);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem; /* تكبير أيقونة التبديل */
+            user-select: none;
+            z-index: 1150;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: var(--green-darker);
+            transform: scale(1.05);
+        }
+
+        /* المحتوى الرئيسي */
+        .main {
+            flex-grow: 1;
+            padding: 40px 60px 40px 40px; /* زيادة البادينج */
+            margin-right: calc(var(--sidebar-width-collapsed) + 40px); /* مسافة أكبر لليمين */
+            transition: margin-right 0.4s ease;
+            margin-top: 40px; /* مسافة من الأعلى */
+            min-height: calc(100vh - 100px);
+        }
+
+        .sidebar.open ~ .main {
+            margin-right: calc(var(--sidebar-width-expanded) + 40px); /* مسافة أكبر عند الفتح */
+        }
+
+        /* كروت الإحصائيات */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* تكبير حجم الكروت */
+            gap: 30px; /* زيادة المسافة بين الكروت */
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #ffffff, #f9f9f9); /* تدريج أبيض خفيف */
+            padding: 30px 35px; /* زيادة البادينج */
+            border-radius: 20px; /* تدوير أكثر للحواف */
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8); /* حدود خفيفة */
+        }
+
+        .card:hover {
+            transform: translateY(-8px); /* حركة رفع بسيطة */
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12); /* ظل أعمق عند الهوفر */
+        }
+
+        .card h3 {
+            margin: 0 0 15px; /* مسافة أكبر */
+            font-size: 2.8rem; /* تكبير الرقم */
+            color: var(--green-dark);
+            letter-spacing: -1px; /* تباعد أحرف سالب للرقم */
+        }
+
+        .card span {
+            font-size: 1.3rem; /* تكبير النص */
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* عناوين الأقسام */
+        h2 {
+            color: var(--green-dark);
+            margin-top: 60px; /* مسافة أكبر من الأعلى */
+            margin-bottom: 25px; /* مسافة أكبر من الأسفل */
+            font-weight: 700;
+            font-size: 2rem; /* تكبير العنوان */
+            border-bottom: 2px solid var(--green-light); /* خط تحت العنوان */
+            padding-bottom: 10px;
+            display: inline-block; /* لكي يأخذ الخط عرض العنوان فقط */
+            letter-spacing: 0.5px;
+        }
+
+        /* الجداول */
+        table {
+            width: 100%;
+            border-collapse: separate; /* فصل الخلايا */
+            border-spacing: 0 10px; /* مسافة بين الصفوف */
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 18px; /* تدوير حواف الجدول */
+            box-shadow: var(--table-shadow);
+            overflow: hidden; /* لإخفاء أي جزء يخرج عن الحواف المدورة */
+        }
+
+        thead tr {
+            background-color: var(--green-light-bg); /* لون خلفية رأس الجدول أفتح قليلاً */
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        th, td {
+            padding: 16px 20px; /* زيادة البادينج */
+            text-align: center;
+            vertical-align: middle; /* توسيط عمودي للمحتوى */
+        }
+        th:first-child { border-top-right-radius: 18px; } /* تدوير الحافة العلوية اليمنى لأول عمود */
+        th:last-child { border-top-left-radius: 18px; } /* تدوير الحافة العلوية اليسرى لآخر عمود */
+
+
+        tbody tr {
+            background-color: #ffffff;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border-bottom: 1px solid #eee; /* خط فاصل خفيف بين الصفوف */
+        }
+        tbody tr:last-child {
+            border-bottom: none; /* إزالة الخط الفاصل من آخر صف */
+        }
+
+        tbody tr:hover {
+            background-color: var(--green-light); /* لون عند الهوفر */
+            color: var(--text-dark); /* الحفاظ على لون النص الداكن */
+            transform: translateY(-3px); /* رفع الصف قليلاً */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07); /* ظل خفيف عند الهوفر */
+        }
+
+        /* أزرار الإجراءات */
+        .btn {
+            padding: 10px 22px; /* زيادة البادينج */
+            border: none;
+            border-radius: 12px; /* تدوير أكثر */
+            background-color: var(--green-mid);
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.05rem; /* تكبير الخط قليلاً */
+            margin: 5px; /* زيادة المسافة بين الأزرار */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: var(--button-shadow);
+            display: inline-flex; /* لجعل الأزرار تتصرف كـ flex items */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: var(--green-mid-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn i {
+            margin-left: 8px; /* مسافة للأيقونة */
+        }
+
+        .btn-danger {
+            background-color: transparent;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+            padding: 9px 20px; /* ضبط البادينج ليناسب الحدود */
+            box-shadow: none; /* إزالة الظل الافتراضي */
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(185, 68, 68, 0.2); /* ظل أحمر خفيف */
+        }
+
+        /* زر الإضافة الجديد */
+        .add-new-btn {
+            background-color: var(--green-dark);
+            color: white;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 15px;
+            margin-bottom: 30px; /* مسافة من الجدول */
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-new-btn:hover {
+            background-color: var(--green-darker);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .add-new-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* تنسيقات خاصة لحالة المواعيد */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .status-badge.confirmed {
+            background-color: var(--success);
+        }
+        .status-badge.canceled {
+            background-color: var(--cancel);
+        }
+        .status-badge.pending {
+            background-color: #ffc107; /* لون أصفر للانتظار */
+            color: var(--text-dark);
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .page-title {
+                font-size: 1.8rem;
+                padding: 8px 20px;
+                top: 10px;
+                max-width: 90vw;
+            }
+
+            .layout {
+                padding-top: 80px;
+            }
+
+            .sidebar {
+                top: 80px;
+                right: 10px;
+                max-height: calc(100vh - 100px);
+                width: var(--sidebar-width-collapsed); /* Keep collapsed on smaller screens initially */
+            }
+
+            .sidebar.open {
+                width: 180px; /* Adjust expanded width for smaller screens */
+            }
+
+            .sidebar a {
+                font-size: 0.95rem;
+                padding: 10px 12px;
+                margin-bottom: 10px;
+            }
+
+            .sidebar a i {
+                font-size: 1.3rem;
+            }
+
+            .sidebar-toggle {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+                top: 15px;
+                left: 15px;
+            }
+
+            .main {
+                padding: 30px;
+                margin-right: calc(var(--sidebar-width-collapsed) + 20px);
+                margin-top: 20px;
+            }
+            .sidebar.open ~ .main {
+                margin-right: calc(180px + 20px); /* Adjust based on new expanded width */
+            }
+
+            .cards {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+
+            .card {
+                padding: 20px 25px;
+            }
+            .card h3 {
+                font-size: 2.2rem;
+            }
+            .card span {
+                font-size: 1.1rem;
+            }
+
+            h2 {
+                font-size: 1.7rem;
+                margin-top: 40px;
+                margin-bottom: 20px;
+            }
+
+            th, td {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+                margin: 3px;
+            }
+            .btn-danger {
+                padding: 7px 15px;
+            }
+            .add-new-btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.5rem;
+                padding: 6px 15px;
+                border-radius: 10px;
+            }
+            .layout {
+                flex-direction: column;
+                padding-top: 70px;
+            }
+
+            .sidebar {
+                position: static; /* إزالة التثبيت */
+                width: 95%; /* عرض كامل تقريباً */
+                margin: 10px auto; /* توسيط */
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                padding: 15px 10px;
+                max-height: unset; /* إزالة قيود الارتفاع */
+                align-items: flex-start;
+                transition: none; /* إزالة الانتقال على العرض */
+                flex-direction: row; /* جعل الروابط جنب بعض */
+                flex-wrap: wrap; /* السماح بتعدد الأسطر */
+                justify-content: center;
+            }
+
+            .sidebar.open {
+                width: 95%; /* مافيش فرق كبير في العرض */
+                padding: 15px 10px;
+            }
+
+            .sidebar a {
+                opacity: 1; /* عرض الروابط دائما */
+                pointer-events: auto;
+                font-size: 0.85rem;
+                padding: 8px 10px;
+                margin: 5px; /* مسافة بين الروابط */
+                width: auto; /* عرض تلقائي */
+                color: var(--text-dark); /* دايماً داكن */
+            }
+
+            .sidebar a span {
+                display: none; /* إخفاء النص في القائمة الجانبية في شاشات الموبايل */
+            }
+
+            .sidebar a i {
+                margin: 0; /* إزالة المسافة للأيقونات */
+                font-size: 1.2rem;
+                color: var(--green-dark); /* دايماً داكن */
+            }
+            .sidebar a:hover i {
+                color: white;
+            }
+            .sidebar a:hover {
+                background-color: var(--green-mid);
+                color: white;
+                transform: none; /* إلغاء الحركة */
+                box-shadow: none;
+            }
+
+            .sidebar-toggle {
+                display: none; /* إخفاء زر التبديل في وضع الموبايل */
+            }
+
+            .main {
+                padding: 20px;
+                margin-right: 0; /* إزالة الهامش الأيمن */
+                margin-top: 10px;
+            }
+            .sidebar.open ~ .main {
+                margin-right: 0;
+            }
+
+            .cards {
+                grid-template-columns: 1fr; /* كرت واحد في كل سطر */
+                gap: 15px;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block; /* جعل الجدول متجاوب */
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px; /* إخفاء رأس الجدول */
+                left: -9999px;
+            }
+
+            tr {
+                border: 1px solid #eee;
+                margin-bottom: 15px;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%; /* مساحة لـ "الاسم" */
+                text-align: right;
+            }
+
+            td:before {
+                position: absolute;
+                top: 0;
+                right: 6px;
+                width: 45%;
+                padding-left: 10px;
+                white-space: nowrap;
+                content: attr(data-label); /* عرض اسم العمود */
+                font-weight: bold;
+                color: var(--green-dark);
+                text-align: right;
+                padding-top: 16px; /* محاذاة مع المحتوى */
+            }
+
+            /* تحديد أسماء الأعمدة في وضع الموبايل */
+            td:nth-of-type(1):before { content: "العميل"; }
+            td:nth-of-type(2):before { content: "اليوم"; }
+            td:nth-of-type(3):before { content: "الفترة"; }
+            td:nth-of-type(4):before { content: "التاريخ"; }
+            td:nth-of-type(5):before { content: "الوقت"; }
+            td:nth-of-type(6):before { content: "الحالة"; }
+            td:nth-of-type(7):before { content: "الإجراء"; }
+
+            /* للجداول الأخرى */
+            .main table:nth-of-type(2) td:nth-of-type(1):before { content: "الخدمة"; }
+            .main table:nth-of-type(2) td:nth-of-type(2):before { content: "المدة"; }
+            .main table:nth-of-type(2) td:nth-of-type(3):before { content: "السعر"; }
+
+            .btn {
+                display: block; /* كل زر في سطر جديد */
+                width: calc(100% - 10px); /* عرض كامل تقريبا */
+                margin: 5px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-title">لوحة تحكم مزود الخدمة</div>
+    <div class="layout">
+        <nav id="sidebar" class="sidebar" aria-label="القائمة الجانبية">
+            <div id="sidebarToggle" class="sidebar-toggle" title="فتح/إغلاق القائمة" aria-pressed="false" role="button"
+                tabindex="0">&#9776;</div>
+
+           
+
+            <a href="#app" title="المواعيد">
+                <i class="fas fa-calendar-check"></i>
+                <span>المواعيد</span>
+            </a>
+
+            <a href="#serv" title="الخدمات">
+                <i class="fas fa-box"></i>
+                <span>الخدمات</span>
+            </a>         
+
+            <a href="settings.html" title="الإعدادات">
+                <i class="fas fa-cogs"></i>
+                <span>الإعدادات</span>
+            </a>
+
+            <a href="index.html" id="logoutLink" title="تسجيل الخروج">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>تسجيل الخروج</span>
+            </a>
+        </nav>
+
+        <div class="main">
+            <div class="cards">
+                <div class="card">
+                    <h3>5</h3>
+                    <span>مواعيد اليوم</span>
+                </div>
+                <div class="card">
+                    <h3>12</h3>
+                    <span>مواعيد مؤكدة</span>
+                </div>
+                <div class="card">
+                    <h3>2</h3>
+                    <span>مواعيد ملغاة</span>
+                </div>
+            </div>
+
+            <h2 id="app">إدارة المواعيد</h2>
+            <a href="" class="btn add-new-btn">
+                <i class="fas fa-plus"></i>
+                إضافة موعد جديد
+            </a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>اسم العميل</th>
+                        <th>اليوم</th>
+                        <th>الفترة</th>
+                        <th>التاريخ</th>
+                        <th>الوقت</th>
+                        <th>الحالة</th> <th>الإجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="اسم العميل">سارة محمد</td>
+                        <td data-label="اليوم">الأحد</td>
+                        <td data-label="الفترة">2:00 - 6:00 مساءً</td>
+                        <td data-label="التاريخ">2025-07-10</td>
+                        <td data-label="الوقت">4:00 مساءً</td>
+                        <td data-label="الحالة">
+                            <span class="status-badge confirmed">مؤكدة</span>
+                        </td>
+                        <td data-label="الإجراء">
+                            <a href="edit.html" class="btn"><i class="fas fa-edit"></i> تعديل</a>
+                            <button class="btn btn-danger" onclick="deleteRow(this)"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="اسم العميل">أحمد خليفة</td>
+                        <td data-label="اليوم">الثلاثاء</td>
+                        <td data-label="الفترة">10:00 - 1:00 مساءً</td>
+                        <td data-label="التاريخ">2025-07-11</td>
+                        <td data-label="الوقت">1:30 مساءً</td>
+                        <td data-label="الحالة">
+                            <span class="status-badge pending">بانتظار التأكيد</span>
+                        </td>
+                        <td data-label="الإجراء">
+                            <a href="edit.html" class="btn"><i class="fas fa-edit"></i> تعديل</a>
+                            <button class="btn btn-danger" onclick="deleteRow(this)"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="اسم العميل">فاطمة علي</td>
+                        <td data-label="اليوم">الأربعاء</td>
+                        <td data-label="الفترة">9:00 - 11:00 صباحاً</td>
+                        <td data-label="التاريخ">2025-07-12</td>
+                        <td data-label="الوقت">9:30 صباحاً</td>
+                        <td data-label="الحالة">
+                            <span class="status-badge canceled">ملغاة</span>
+                        </td>
+                        <td data-label="الإجراء">
+                            <a href="edit.html" class="btn"><i class="fas fa-edit"></i> تعديل</a>
+                            <button class="btn btn-danger" onclick="deleteRow(this)"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 id="serv">الخدمات المقدمة</h2>
+            <a href="" class="btn add-new-btn">
+                <i class="fas fa-plus"></i>
+                إضافة خدمة جديدة
+            </a>
+            <table>
+                <thead>
+                    <tr>
+                        <th>اسم الخدمة</th>
+                        <th>المدة</th>
+                        <th>السعر</th>
+                       
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="اسم الخدمة">استشارة شخصية</td>
+                        <td data-label="المدة">30 دقيقة</td>
+                        <td data-label="السعر">50 د.ل</td>
+                       
+                    </tr>
+                    <tr>
+                        <td data-label="اسم الخدمة">جلسة متابعة</td>
+                        <td data-label="المدة">20 دقيقة</td>
+                        <td data-label="السعر">30 د.ل</td>
+                      
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            toggleBtn.setAttribute('aria-pressed', sidebar.classList.contains('open'));
+        });
+
+        // إغلاق الشريط الجانبي عند النقر خارج نطاقه (فقط في وضع سطح المكتب)
+        document.addEventListener('click', (e) => {
+            const isClickInsideSidebar = sidebar.contains(e.target);
+            const isClickOnToggle = toggleBtn.contains(e.target);
+            const isMobile = window.innerWidth <= 768; // تحديد إذا كانت الشاشة صغيرة (موبايل)
+
+            if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('open') && !isMobile) {
+                sidebar.classList.remove('open');
+                toggleBtn.setAttribute('aria-pressed', false);
+            }
+        });
+
+  
+        function deleteRow(button) {
+            if (confirm("هل أنت متأكد أنك تريد حذف هذا العنصر؟")) {
+                button.closest("tr").remove();
+            }
+        }
+    </script>
+</body>
+
+</html>

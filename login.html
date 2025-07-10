@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hagzi - تسجيل الدخول</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+
+  <style>
+    html {
+      height: 100%;
+      overflow: auto;
+    }
+
+    :root {
+      --color-dark-green: #2F5249;
+      --color-mid-green: #a7c1a8; /* Reverted to original value */
+      --color-light-green: #d1d8be;
+      --color-very-light: #eeefe0; /* Reverted to original value */
+      --color-text-dark: #3b3b4f;
+
+      /* Sidebar specific, keep new */
+      --sidebar-width-collapsed: 60px;
+      --sidebar-width-expanded: 220px;
+      --sidebar-padding-vertical: 20px;
+      --sidebar-border-radius: 32px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Kufi Arabic', sans-serif;
+      background-color: var(--color-very-light); /* Reverted */
+      color: var(--color-text-dark);
+      direction: rtl;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      position: relative;
+      height: 100%;
+    }
+
+    /* Layout for Sidebar and Main Content */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+  
+    /* Main Content Area */
+    .main {
+      flex-grow: 1;
+      padding: 40px 40px 40px 60px; /* Adjust padding as needed */
+      margin-right: var(--sidebar-width-collapsed);
+      transition: margin-right 0.3s ease;
+      margin-top: 20px;
+      min-height: calc(100vh - 40px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+
+
+    .container {
+      background-color: var(--color-light-green); /* Reverted to original */
+      border-radius: 25px;
+      box-shadow: 0 8px 22px rgba(47, 82, 73, 0.15);
+      padding: 40px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .form-header {
+      margin-bottom: 30px;
+    }
+
+    .form-header h2 {
+      font-size: 2.2rem;
+      color: var(--color-dark-green); /* Reverted */
+      margin-bottom: 15px;
+    }
+
+    .form-toggle-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+      gap: 15px;
+    }
+
+    .toggle-btn {
+      background-color: var(--color-mid-green); /* Reverted */
+      color: var(--color-very-light); /* Reverted */
+      border: none;
+      padding: 12px 25px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    }
+
+    .toggle-btn:hover {
+      background-color: var(--color-dark-green); /* Reverted */
+      transform: translateY(-2px);
+    }
+
+    .toggle-btn.active {
+      background-color: var(--color-dark-green); /* Reverted */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--color-text-dark); /* Reverted */
+    }
+
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 12px 20px;
+      border: 2px solid var(--color-mid-green); /* Reverted */
+      border-radius: 15px;
+      font-size: 1rem;
+      font-family: 'Noto Kufi Arabic', sans-serif;
+      color: var(--color-text-dark); /* Reverted */
+      background-color: var(--color-very-light); /* Reverted */
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--color-dark-green); /* Reverted */
+      box-shadow: 0 0 0 3px rgba(10, 64, 12, 0.2);
+      outline: none;
+    }
+
+    .form-group input::placeholder {
+      color: var(--color-mid-green); /* Reverted */
+    }
+
+    .user-type-heading {
+        margin-top: 25px;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: var(--color-text-dark); /* Reverted */
+        font-weight: 600;
+        text-align: right;
+        padding-right: 5px;
+    }
+
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: var(--color-light-green); /* Reverted */
+      border-radius: 15px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      color: var(--color-text-dark); /* Reverted */
+      font-weight: 600;
+      flex-wrap: wrap;
+    }
+
+    .radio-group label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .radio-group input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .radio-group label span.radio-custom {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid var(--color-dark-green); /* Reverted */
+        margin-left: 10px;
+        position: relative;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .radio-group input[type="radio"]:checked + span.radio-custom::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--color-dark-green); /* Reverted */
+    }
+
+    .radio-group input[type="radio"]:focus + span.radio-custom {
+        box-shadow: 0 0 0 3px rgba(10, 64, 12, 0.2);
+    }
+
+    .submit-btn {
+      background-color: var(--color-dark-green); /* Reverted */
+      color: var(--color-very-light); /* Reverted */
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      width: 100%;
+    }
+
+    .submit-btn:hover {
+      background-color: #072e08;
+      transform: translateY(-3px);
+    }
+
+    .form-footer-link {
+      margin-top: 20px;
+      font-size: 0.95rem;
+    }
+
+    .form-footer-link a {
+      color: var(--color-dark-green); /* Reverted */
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .form-footer-link a:hover {
+      text-decoration: underline;
+    }
+
+    .hidden-form {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      
+      .main {
+        padding: 20px; /* Adjusted padding for smaller screens */
+        margin-top: 15px;
+        min-height: calc(100vh - 40px);
+        margin-right: var(--sidebar-width-collapsed); /* Keep margin for sidebar */
+      }
+      .sidebar.open ~ .main {
+        margin-right: var(--sidebar-width-expanded);
+      }
+      .container {
+        padding: 25px;
+      }
+      .form-header h2 {
+        font-size: 1.8rem;
+      }
+      .toggle-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+   
+
+    <div class="main">
+      <div class="container">
+        <div class="form-header">
+          <h2>مرحبًا بك في Hagzi!</h2>
+          <div class="form-toggle-buttons">
+            <button id="login-toggle" class="toggle-btn active">تسجيل الدخول</button>
+            <button id="register-toggle" class="toggle-btn">إنشاء حساب</button>
+          </div>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-email">البريد الإلكتروني:</label>
+            <input type="email" id="login-email" placeholder="أدخل بريدك الإلكتروني" required />
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">كلمة المرور:</label>
+            <input type="password" id="login-password" placeholder="أدخل كلمة المرور" required />
+          </div>
+
+          <div class="user-type-heading">نوع المستخدم:</div>
+          <div class="form-group radio-group">
+            <label>
+              <input type="radio" name="user-type-login" value="client" checked />
+              <span class="radio-custom"></span>
+              عميل
+            </label>
+            <label>
+              <input type="radio" name="user-type-login" value="service-provider" />
+              <span class="radio-custom"></span>
+              مزود خدمة
+            </label>
+          </div>
+
+          <button type="submit" class="submit-btn">تسجيل الدخول</button>
+          <p class="form-footer-link">
+            <a href="#">نسيت كلمة المرور؟</a>
+          </p>
+        </form>
+
+        <form id="register-form" class="hidden-form">
+          <div class="form-group">
+            <label for="register-name">الاسم الكامل:</label>
+            <input type="text" id="register-name" placeholder="أدخل اسمك الكامل" required />
+          </div>
+          <div class="form-group">
+            <label for="register-email">البريد الإلكتروني:</label>
+            <input type="email" id="register-email" placeholder="أدخل بريدك الإلكتروني" required />
+          </div>
+
+          <div class="form-group">
+            <label for="register-password">كلمة المرور:</label>
+            <input type="password" id="register-password" placeholder="أدخل كلمة مرور قوية" required />
+          </div>
+          <div class="form-group">
+            <label for="register-confirm-password">تأكيد كلمة المرور:</label>
+            <input type="password" id="register-confirm-password" placeholder="أعد إدخال كلمة المرور" required />
+          </div>
+
+          <div class="user-type-heading">نوع المستخدم:</div>
+          <div class="form-group radio-group">
+            <label>
+              <input type="radio" name="user-type-register" value="client" checked />
+              <span class="radio-custom"></span>
+              عميل
+            </label>
+            <label>
+              <input type="radio" name="user-type-register" value="service-provider" />
+              <span class="radio-custom"></span>
+              مزود خدمة
+            </label>
+          </div>
+          
+          <button type="submit" class="submit-btn">إنشاء حساب</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const loginToggle = document.getElementById('login-toggle');
+    const registerToggle = document.getElementById('register-toggle');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    function showForm(formToShow, activeBtn) {
+      loginForm.classList.add('hidden-form');
+      registerForm.classList.add('hidden-form');
+
+      loginToggle.classList.remove('active');
+      registerToggle.classList.remove('active');
+
+      formToShow.classList.remove('hidden-form');
+      activeBtn.classList.add('active');
+    }
+
+    loginToggle.addEventListener('click', () => {
+      showForm(loginForm, loginToggle);
+    });
+
+    registerToggle.addEventListener('click', () => {
+      showForm(registerForm, registerToggle);
+    });
+
+    // تسجيل الدخول
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const selectedUserTypeLogin = document.querySelector('input[name="user-type-login"]:checked').value;
+
+      // حفظ بيانات الدخول
+      localStorage.setItem('loggedIn', selectedUserTypeLogin);
+
+      if (selectedUserTypeLogin === 'client') {
+        window.location.href = 'index.html?hideSections=1';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    // إنشاء حساب
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+
+      if (password !== confirmPassword) {
+        alert('كلمتا المرور غير متطابقتين!');
+        return;
+      }
+
+      const selectedUserTypeRegister = document.querySelector('input[name="user-type-register"]:checked').value;
+      const userName = document.getElementById('register-name').value;
+
+      // حفظ بيانات المستخدم
+      localStorage.setItem('loggedIn', selectedUserTypeRegister);
+      localStorage.setItem('userName', userName);
+
+      if (selectedUserTypeRegister === 'client') {
+        window.location.href = 'index.html?hideSections=1';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    // --- Sidebar Toggle Logic ---
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      toggleBtn.setAttribute('aria-pressed', sidebar.classList.contains('open'));
+    });
+
+    document.addEventListener('click', (e) => {
+      const isClickInsideSidebar = sidebar.contains(e.target);
+      const isClickOnToggle = toggleBtn.contains(e.target);
+
+      if (!isClickInsideSidebar && !isClickOnToggle) {
+        sidebar.classList.remove('open');
+        toggleBtn.setAttribute('aria-pressed', false);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

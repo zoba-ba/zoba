@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>لوحة تحكم مزود الخدمة | إعدادات</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <style>
+        :root {
+            --green-dark: #2F5249;
+            --green-mid: #4c7a67;
+            --green-light: #a7c1a8;
+            --light-bg: #f5f8f5;
+            --text-dark: #333d29;
+            --danger: #d9534f;
+            --accent-color: #79a18c;
+            --border-color: #e0e0e0;
+            --shadow-light: rgba(0, 0, 0, 0.05);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+
+            /* متغيرات السايدبار لم تعد ضرورية بعد الإلغاء */
+            /* --sidebar-width-collapsed: 60px;
+            --sidebar-width-expanded: 220px;
+            --sidebar-padding-vertical: 20px;
+            --sidebar-border-radius: 32px; */
+            --max-content-width: 850px; /* خليتها نفسها للعرض الرئيسي */
+        }
+
+        /* إعادة تعيين أساسيات */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            background: linear-gradient(135deg, var(--light-bg), #e6ede6);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* رأس الصفحة (Header) */
+        header.page-header {
+            width: 100%;
+            background-color: var(--green-dark);
+            padding: 20px 0;
+            color: white;
+            font-weight: 700;
+            font-size: 2rem;
+            text-align: center;
+            user-select: none;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            flex-shrink: 0;
+            letter-spacing: 1px;
+            display: flex; /* عشان نقدر نتحكم في مكان السهم والنص */
+            justify-content: center;
+            align-items: center;
+            position: relative; /* عشان السهم يكون absolute جواه */
+        }
+
+        header.page-header .back-arrow {
+            position: absolute;
+            right: 25px; /* مكان السهم على اليمين */
+            color: white;
+            font-size: 1.8rem;
+            text-decoration: none;
+            transition: transform 0.3s ease, color 0.3s ease;
+            cursor: pointer;
+        }
+
+        header.page-header .back-arrow:hover {
+            transform: translateX(5px); /* حركة بسيطة للسهم عند التحويم */
+            color: var(--green-light); /* تغيير لون السهم عند التحويم */
+        }
+
+        /* إلغاء السايدبار بالكامل */
+        nav.sidebar,
+        #sidebarToggle {
+            display: none !important;
+        }
+
+        /* التخطيط العام للصفحة */
+        .layout {
+            display: flex;
+            flex-grow: 1;
+            min-height: calc(100vh - 60px);
+            position: relative;
+            justify-content: center;
+            padding-top: 40px; /* تم تعديل البادينج ليناسب إلغاء السايدبار وتمركز المحتوى */
+            padding-bottom: 40px;
+        }
+
+        /* المحتوى الرئيسي */
+        #mainContent {
+            width: 100%;
+            max-width: var(--max-content-width);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px var(--shadow-medium);
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            margin: 0 auto; /* لضمان تمركز المحتوى في المنتصف */
+        }
+
+        /* أقسام الإعدادات - احتفظت بالتحسينات الجمالية */
+        main.settings-main {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 650px;
+        }
+
+        main.settings-main section {
+            background-color: #fcfcfc;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        main.settings-main section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow-medium);
+        }
+
+        main.settings-main section h2 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--green-dark);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 2px solid var(--green-light);
+            padding-bottom: 10px;
+        }
+
+        main.settings-main section h2 i {
+            color: var(--accent-color);
+            font-size: 2rem;
+        }
+
+        main.settings-main form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-end;
+            width: 100%;
+        }
+
+        main.settings-main label {
+            width: 100%;
+            font-weight: 600;
+            color: var(--green-dark);
+            text-align: right;
+            margin-bottom: 4px;
+            user-select: none;
+            font-size: 1rem;
+        }
+
+        /* حقول الإدخال - احتفظت بالتحسينات الجمالية */
+        main.settings-main input[type="text"],
+        main.settings-main input[type="email"],
+        main.settings-main input[type="file"],
+        main.settings-main input[type="tel"],
+        main.settings-main textarea,
+        main.settings-main select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1.05rem;
+            border-radius: 12px;
+            border: 2px solid var(--green-light);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            background-color: #fdfdfd;
+        }
+
+        main.settings-main input[type="text"]:focus,
+        main.settings-main input[type="email"]:focus,
+        main.settings-main input[type="file"]:focus,
+        main.settings-main input[type="tel"]:focus,
+        main.settings-main textarea:focus,
+        main.settings-main select:focus {
+            border-color: var(--green-mid);
+            box-shadow: 0 0 10px rgba(76, 122, 103, 0.2);
+        }
+
+        main.settings-main textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* صورة الملف الشخصي - احتفظت بالتحسينات الجمالية */
+        main.settings-main .profile-pic-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        main.settings-main .profile-pic-wrapper img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 6px 20px rgba(47, 82, 73, 0.4);
+            border: 4px solid var(--green-mid);
+            padding: 3px;
+            user-select: none;
+            transition: transform 0.3s ease;
+        }
+        main.settings-main .profile-pic-wrapper img:hover {
+            transform: scale(1.05);
+        }
+
+        main.settings-main .profile-pic-wrapper input[type="file"] {
+            border: 1px dashed var(--green-light);
+            background-color: var(--light-bg);
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: 8px 12px;
+        }
+        main.settings-main .profile-pic-wrapper input[type="file"]:hover {
+            border-color: var(--green-mid);
+        }
+
+        /* زر الحفظ - احتفظت بالتحسينات الجمالية */
+        main.settings-main .btn-submit {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background-color: var(--green-mid);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            align-self: center;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 300px;
+            user-select: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        main.settings-main .btn-submit:hover {
+            background-color: var(--green-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* أيقونات داخل حقول الإدخال - احتفظت بالتحسينات الجمالية */
+        main.settings-main .input-icon-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        main.settings-main .input-icon-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--green-light);
+            font-size: 1.4rem;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+
+        main.settings-main input[type="text"].with-icon,
+        main.settings-main input[type="email"].with-icon,
+        main.settings-main input[type="tel"].with-icon,
+        main.settings-main select.with-icon {
+            padding-left: 48px;
+        }
+        
+        main.settings-main .input-icon-wrapper:focus-within i {
+            color: var(--green-mid);
+        }
+
+        /* استجابة التصميم (Responsive Design) - تم تعديلها لتناسب غياب السايدبار */
+        @media (max-width: 900px) {
+            .layout {
+                padding-top: 20px; /* قللت البادينج العلوي */
+                padding-bottom: 20px;
+            }
+
+            #mainContent {
+                padding: 30px 20px;
+            }
+
+            header.page-header .back-arrow {
+                right: 15px; /* قللت المسافة من اليمين في الشاشات الصغيرة */
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header.page-header {
+                font-size: 1.5rem;
+                padding: 15px 0;
+            }
+            .layout {
+                padding: 15px;
+            }
+            #mainContent {
+                padding: 20px 15px;
+            }
+            main.settings-main {
+                gap: 30px;
+            }
+            main.settings-main section h2 {
+                font-size: 1.4rem;
+                gap: 10px;
+            }
+            main.settings-main section h2 i {
+                font-size: 1.6rem;
+            }
+            main.settings-main .profile-pic-wrapper img {
+                width: 100px;
+                height: 100px;
+            }
+            main.settings-main input[type="text"],
+            main.settings-main input[type="email"],
+            main.settings-main input[type="file"],
+            main.settings-main input[type="tel"],
+            main.settings-main textarea,
+            main.settings-main select {
+                font-size: 0.95rem;
+                padding: 10px 14px;
+            }
+            main.settings-main .btn-submit {
+                font-size: 1rem;
+                padding: 12px 20px;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="page-header">
+        <a href="dashboard.html" class="back-arrow" title="الرجوع إلى لوحة التحكم">
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        إعدادات
+    </header>
+
+    <div class="layout">
+        <main id="mainContent" class="settings-main" role="main" aria-label="صفحة إعدادات مزود الخدمة">
+            <section aria-labelledby="profile-heading">
+                <h2 id="profile-heading"><i class="fas fa-user-cog"></i> تعديل الملف الشخصي</h2>
+                <form>
+                    <div class="profile-pic-wrapper" aria-label="الصورة الشخصية الحالية">
+                        <img src="https://i.pravatar.cc/130" alt="صورة المستخدم" />
+                        <input type="file" accept="image/*" aria-describedby="profilePicDesc" />
+                        <div id="profilePicDesc" style="font-size: 0.9rem; color: var(--accent-color); font-weight: 500;">
+                            اختر صورة جديدة للملف الشخصي</div>
+                    </div>
+
+                    <label for="fullName">الاسم الكامل</label>
+                    <div class="input-icon-wrapper">
+                        <input id="fullName" type="text" class="with-icon" placeholder="أدخل الاسم الكامل" value="اسم مزود الخدمة" />
+                        <i class="fas fa-signature"></i>
+                    </div>
+
+                    <label for="email">البريد الإلكتروني</label>
+                    <div class="input-icon-wrapper">
+                        <input id="email" type="email" class="with-icon" placeholder="example@mail.com" value="service.provider@example.com" />
+                        <i class="fas fa-envelope"></i>
+                    </div>
+
+                    <label for="phone">رقم الهاتف</label>
+                    <div class="input-icon-wrapper">
+                        <input id="phone" type="tel" class="with-icon" placeholder="مثال: 0912345678" value="0911234567" />
+                        <i class="fas fa-phone"></i>
+                    </div>
+                </form>
+            </section>
+
+            <section aria-labelledby="work-hours-heading">
+                <h2 id="work-hours-heading"><i class="fas fa-clock"></i> إدارة ساعات العمل وأيام الإجازات</h2>
+                <form>
+                    <label for="workHours">ساعات العمل</label>
+                    <input id="workHours" type="text" placeholder="مثال: الأحد - الخميس، 9 صباحاً - 5 مساءً" value="الأحد - الخميس، 9 صباحاً - 5 مساءً" />
+
+                    <label for="offDays">أيام الإجازات</label>
+                    <input id="offDays" type="text" placeholder="مثال: الجمعة والسبت" value="الجمعة والسبت" />
+                </form>
+            </section>
+
+            <section aria-labelledby="notifications-heading">
+                <h2 id="notifications-heading"><i class="fas fa-bell"></i> إعدادات التنبيهات والإشعارات</h2>
+                <form>
+                    <label for="smsNotifications">تنبيهات الرسائل النصية (SMS)</label>
+                    <div class="input-icon-wrapper">
+                        <select id="smsNotifications" class="with-icon" aria-describedby="smsDesc">
+                            <option value="enabled">مفعلة</option>
+                            <option value="disabled">معطلة</option>
+                        </select>
+                        <i class="fas fa-sms"></i>
+                    </div>
+
+                    <label for="emailNotifications">تنبيهات البريد الإلكتروني</label>
+                    <div class="input-icon-wrapper">
+                        <select id="emailNotifications" class="with-icon" aria-describedby="emailDesc">
+                            <option value="enabled">مفعلة</option>
+                            <option value="disabled">معطلة</option>
+                        </select>
+                        <i class="fas fa-at"></i>
+                    </div>
+                </form>
+            </section>
+
+            <button class="btn-submit" type="submit" aria-label="حفظ التعديلات">حفظ التعديلات</button>
+        </main>
+    </div>
+
+    </body>
+
+</html>

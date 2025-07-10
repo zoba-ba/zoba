@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>خطأ 404 - الصفحة غير موجودة</title>
+
+<!-- خط Noto Kufi Arabic -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic&display=swap" rel="stylesheet" />
+
+<!-- مكتبة Font Awesome للايقونات -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+
+<style>
+  :root {
+    --color-dark-green: #2f5249;
+    --color-mid-green: #4c7a67;
+    --color-light-green: #a7c1a8;
+    --color-bg: #f1f5f2;
+    --color-text-dark: #2a2a2a;
+  }
+
+  body {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    background-color: var(--color-bg);
+    margin: 0;
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: var(--color-text-dark);
+  }
+
+  main {
+    max-width: 480px;
+    background: white;
+    border-radius: 30px;
+    padding: 40px 30px;
+    box-shadow:
+      0 16px 30px rgba(76, 122, 103, 0.2),
+      0 0 20px rgba(167, 193, 168, 0.15);
+    user-select: none;
+
+    animation: fadeSlideUp 1s ease forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  @keyframes fadeSlideUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .icon-error {
+    font-size: 120px;
+    color: var(--color-mid-green);
+    margin-bottom: 30px;
+
+    animation: fadeSlideUp 1s ease forwards;
+    animation-delay: 0.1s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--color-dark-green);
+    margin-bottom: 15px;
+
+    animation: fadeSlideUp 1s ease forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  p {
+    font-size: 1.3rem;
+    margin-bottom: 40px;
+    color: var(--color-mid-green);
+
+    animation: fadeSlideUp 1s ease forwards;
+    animation-delay: 0.7s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  a {
+    display: inline-block;
+    background-color: var(--color-mid-green);
+    color: white;
+    font-weight: 800;
+    font-size: 1.15rem;
+    padding: 14px 38px;
+    border-radius: 30px;
+    text-decoration: none;
+    box-shadow:
+      0 8px 24px rgba(76, 122, 103, 0.6);
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+
+    animation: fadeSlideUp 1s ease forwards;
+    animation-delay: 0.9s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  a:hover {
+    background-color: var(--color-dark-green);
+    box-shadow:
+      0 12px 36px rgba(47, 82, 73, 0.9);
+    transform: scale(1.07);
+  }
+
+  @media (max-width: 480px) {
+    main {
+      padding: 30px 20px;
+    }
+    h1 {
+      font-size: 2.2rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+    .icon-error {
+      font-size: 90px;
+      margin-bottom: 25px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <main>
+    <i class="fas fa-bug icon-error" aria-hidden="true"></i>
+    <h1>عذرًا! الصفحة غير موجودة</h1>
+    <p>الرابط الذي أدخلته غير صحيح أو لم يعد متوفراً.</p>
+    <a href="index.html" aria-label="العودة إلى الصفحة الرئيسية">العودة للصفحة الرئيسية</a>
+  </main>
+
+</body>
+</html>

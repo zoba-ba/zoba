@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تعديل الموعد | Hazzi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" />
+    <style>
+        :root {
+            /* الألوان الأساسية */
+            --green-dark: #2F5249;
+            --green-darker: #25403A; /* درجة أغمق للأخضر */
+            --green-mid: #a7c1a8;
+            --green-mid-hover: #8ba88f; /* درجة أغمق للهوفر */
+            --green-light: #d1d8be;
+            --light-bg: #f6f6f2;
+            --text-dark: #3b3b4f;
+            --text-light: #6a6a7c;
+            --white: #ffffff; /* إضافة لون أبيض للمساعدة */
+
+            /* الظلال */
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --input-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --button-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* إعادة ضبط أساسية وتحسينات للخط */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* توسيط عمودي للمحتوى */
+            align-items: center; /* توسيط أفقي للمحتوى */
+            line-height: 1.6;
+        }
+
+        /* الهيدر */
+        header {
+            background: linear-gradient(145deg, var(--green-dark), var(--green-darker)); /* تدريج لوني */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2rem; /* تكبير الخط */
+            font-weight: 700; /* وزن خط أثقل */
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative; /* لتحديد مكان زر الرجوع */
+            letter-spacing: 1px; /* تباعد أحرف خفيف */
+        }
+
+        .back-button {
+            position: absolute;
+            right: 25px; /* المسافة من اليمين */
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2); /* خلفية شفافة */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none; /* عشان لو كان رابط A */
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.05);
+        }
+        .back-button i {
+            margin: 0; /* إزالة أي هوامش داخلية للأيقونة */
+        }
+
+
+        /* الصندوق الرئيسي */
+        .container {
+            max-width: 600px;
+            width: 90%; /* عرض مرن */
+            margin: 40px auto;
+            padding: 35px 40px; /* زيادة البادينج */
+            background: linear-gradient(145deg, #ffffff, #f9f9f9); /* تدريج أبيض خفيف */
+            border-radius: 20px; /* تدوير أكثر للحواف */
+            box-shadow: var(--card-shadow); /* ظل أعمق */
+            border: 1px solid rgba(255, 255, 255, 0.8); /* حدود بيضاء خفيفة */
+        }
+
+        h2 {
+            color: var(--green-dark);
+            font-weight: 700; /* وزن خط أثقل */
+            margin-bottom: 30px; /* زيادة المسافة */
+            text-align: center;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--green-light); /* خط تحت العنوان */
+            padding-bottom: 10px;
+            display: inline-block; /* لكي يأخذ الخط عرض العنوان فقط */
+            width: fit-content; /* عرض بحجم المحتوى */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px; /* زيادة المسافة */
+            margin-bottom: 8px; /* مسافة بسيطة تحت الليبل */
+            font-weight: 600; /* وزن خط متوسط */
+            color: var(--text-dark);
+            font-size: 1.05rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 15px; /* زيادة البادينج */
+            border-radius: 10px; /* تدوير أكثر */
+            border: 1px solid #ddd; /* لون حدود أفتح */
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            font-size: 1rem;
+            color: var(--text-dark);
+            box-shadow: var(--input-shadow); /* ظل خفيف */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fcfcfc; /* خلفية بيضاء خفيفة */
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--green-mid); /* تغيير لون الحدود عند التركيز */
+            box-shadow: 0 0 0 3px rgba(167, 193, 168, 0.3); /* ظل حول العنصر عند التركيز */
+            outline: none; /* إزالة الخط الأزرق الافتراضي */
+        }
+        /* لتغيير لون النص الافتراضي في حقول الإدخال */
+        input::placeholder {
+            color: var(--text-light);
+            opacity: 0.7; /* لجعل النص أخف */
+        }
+
+
+        .btn {
+            display: flex; /* لتمكين الأيقونة والنص معاً */
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* مسافة بين الأيقونة والنص */
+            width: 100%;
+            margin-top: 35px; /* زيادة المسافة */
+            padding: 15px; /* زيادة البادينج */
+            border: none;
+            border-radius: 12px; /* تدوير أكثر */
+            background-color: var(--green-mid);
+            color: white;
+            font-size: 1.1rem; /* تكبير الخط */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: var(--button-shadow); /* ظل للزر */
+        }
+
+        .btn i {
+            margin: 0; /* إزالة أي هوامش داخلية للأيقونة */
+        }
+
+        .btn:hover {
+            background-color: var(--green-mid-hover);
+            transform: translateY(-3px); /* حركة رفع بسيطة */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* ظل أعمق عند الهوفر */
+        }
+
+        .btn:active {
+            transform: translateY(0); /* عند الضغط يرجع مكانه */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* ظل أخف عند الضغط */
+            background-color: var(--green-dark); /* يتغير لونه قليلاً عند الضغط */
+        }
+
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                font-size: 1.5rem;
+                padding: 15px;
+            }
+            .back-button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+                right: 15px;
+            }
+            .container {
+                margin: 20px auto;
+                padding: 25px 20px;
+                width: 95%;
+            }
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 25px;
+            }
+            label {
+                font-size: 1rem;
+                margin-top: 15px;
+            }
+            input,
+            select {
+                padding: 10px 12px;
+                font-size: 0.95rem;
+            }
+            .btn {
+                padding: 12px;
+                font-size: 1rem;
+                margin-top: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        تعديل الموعد
+        <a href="dashboard.html" class="back-button" title="الرجوع للوحة التحكم">
+            <i class="fas fa-arrow-right"></i> </a>
+    </header>
+
+    <div class="container">
+        <h2>تعديل بيانات الموعد</h2>
+        <form onsubmit="return saveAndRedirect()">
+            <label for="clientName">اسم العميل</label>
+            <input type="text" id="clientName" value="سارة محمد" required />
+
+            <label for="dayOfWeek">اليوم</label>
+            <select id="dayOfWeek" required>
+                <option value="الأحد">الأحد</option>
+                <option value="الإثنين">الإثنين</option>
+                <option value="الثلاثاء" selected>الثلاثاء</option> <option value="الأربعاء">الأربعاء</option>
+                <option value="الخميس">الخميس</option>
+                <option value="الجمعة">الجمعة</option>
+                <option value="السبت">السبت</option>
+            </select>
+
+            <label for="appointmentDate">التاريخ</label>
+            <input type="date" id="appointmentDate" value="2025-07-10" required />
+
+            <label for="appointmentTime">الوقت</label>
+            <input type="time" id="appointmentTime" value="16:00" required />
+
+            <label for="appointmentStatus">حالة الموعد</label>
+            <select id="appointmentStatus" required>
+                <option value="confirmed">مؤكدة</option>
+                <option value="pending">بانتظار التأكيد</option>
+                <option value="canceled">ملغاة</option>
+            </select>
+
+            <button type="submit" class="btn">
+                <i class="fas fa-save"></i>
+                <span>حفظ التعديلات</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        function saveAndRedirect() {
+            const btn = document.querySelector('.btn');
+            const originalBtnContent = btn.innerHTML; // حفظ المحتوى الأصلي للزر
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جارٍ الحفظ...</span>'; // أيقونة تحميل
+            btn.disabled = true;
+
+            setTimeout(() => {
+                alert("تم حفظ التعديلات بنجاح ✅");
+                window.location.href = "dashboard.html"; // الرجوع لصفحة لوحة التحكم
+            }, 1500); // زيادة الوقت قليلاً لتبدو عملية الحفظ واقعية أكثر
+
+            return false; // يمنع إعادة تحميل الصفحة
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>قائمة المهنيين</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+
+<style>
+  :root { /* هادي متغيرات ألوان للواجهة، باش ما تقعدش تعاود في نفس اللون كل مرة */
+    --green-dark: #2F5249; /* أخضر غامق شوية */
+    --green-mid: #4c7a67; /* أخضر متوسط */
+    --green-light: #a7c1a8; /* أخضر فاتح */
+    --light-bg: #f6f6f2; /* خلفية فاتحة */
+    --text-dark: #3b3b4f; /* لون الخط غامق */
+    --danger: #b94444; /* لون خطر (أحمر) */
+    --sidebar-width-collapsed: 60px; /* عرض القائمة الجانبية لما تكون مصكرة */
+    --sidebar-width-expanded: 220px; /* عرض القائمة الجانبية لما تكون مفتوحة */
+    --sidebar-padding-vertical: 20px; /* المساحة الداخلية العمودية للقائمة الجانبية */
+    --sidebar-border-radius: 32px; /* تقويسة زوايا القائمة الجانبية */
+  }
+
+  * { /* هادا تنسيق يطبق على كل شي في الصفحة */
+    box-sizing: border-box; /* يخلي العرض والطول يحسبوا البوردر والبادينج معاهم */
+  }
+
+  body { /* تنسيقات الجسم الرئيسي للصفحة */
+    font-family: 'Noto Kufi Arabic', sans-serif; /* نوع الخط المستخدم */
+    background: var(--light-bg); /* خلفية الصفحة */
+    margin: 0; /* يبدأ من حافة الشاشة طول */
+    padding: 0; /* مافيش مسافة داخلية من الحواف */
+    color: var(--text-dark); /* لون الخط الرئيسي */
+    overflow-x: hidden; /* يخفي أي محتوى يطلع برا العرض الأفقي */
+    position: relative; /* يخلي العناصر اللي داخلة تقدر تتحرك بناءً عليه */
+    min-height: 100vh; /* أقل ارتفاع للصفحة يكون 100% من ارتفاع الشاشة */
+  }
+  /* Layout for Sidebar and Main Content */
+  .layout { /* ترتيب عام للقائمة الجانبية والمحتوى الرئيسي */
+    top: 1px; /* مسافة بسيطة من فوق */
+    display: flex; /* يخلي العناصر اللي داخلة تجي جنب بعضها (زي السايدبار والمحتوى) */
+    min-height: 100vh; /* أقل ارتفاع نفس ارتفاع الشاشة */
+    padding-top: calc(10px + 2rem + 1px + 12px); /* مسافة من فوق باش المحتوى مايخشش في العنوان */
+    position: relative; /* يخلي العناصر اللي داخلة تتحرك بناءً عليه */
+  
+  }
+
+  /* Sidebar Styles */
+  .sidebar { /* تنسيقات القائمة الجانبية (الشريط الجانبي) */
+    position: fixed; /* تثبت القائمة الجانبية في مكانها حتى لو نزلت بالشاشة */
+    top: calc(10px + 2rem + 12px + 12px); /* مكانها من فوق الشاشة */
+    top: 137px;
+    right: 10px; /* مسافة 10 بكسل من يمين الشاشة (لأن اللغة عربية RLT) */
+    width: var(--sidebar-width-collapsed); /* العرض المبدئي ليها (60 بكسل) */
+    /* background: linear-gradient(180deg, #6f998e47 0%, rgba(167, 193, 168, 0.45) 100%); خلفية متدرجة بألوان الأخضر */
+    border-radius: var(--sidebar-border-radius); /* تقويسة الزوايا */
+    box-shadow: -3px 4px 18px rgba(0, 0, 0, 0.08); /* ظل خفيف على الجنب */
+    padding: var(--sidebar-padding-vertical) 5px; /* مسافة داخلية عمودية 20 بكسل، وأفقية 5 بكسل */
+    transition: width 0.3s ease, background 0.3s ease; /* حركة ناعمة لما العرض أو الخلفية تتغير */
+    overflow: hidden; /* يخفي أي محتوى يطلع برا حدودها */
+    z-index: 1100; /* يخليها فوق باقي العناصر */
+    backdrop-filter: blur(6px); /* تأثير ضبابي على الخلفية اللي وراها */
+    display: flex; /* يخلي العناصر اللي داخلها مرتبة ورا بعضها (زي الروابط) */
+    flex-direction: column; /* يرتب العناصر عمودياً */
+    align-items: center; /* يخلي العناصر في المنتصف أفقياً لما تكون مصكرة */
+    height: auto; /* الارتفاع يكون تلقائي على حسب المحتوى */
+    max-height: calc(100vh - (10px + 2rem + 12px + 12px) - 10px); /* أقصى ارتفاع ليها باش ما تغطيش الشاشة كلها */
+  }
+
+  .sidebar.open { /* تنسيقات القائمة الجانبية لما تكون مفتوحة */
+    width: var(--sidebar-width-expanded); /* عرضها يزيد لـ 220 بكسل */
+    padding: 20px 20px 20px 25px; /* مسافة داخلية أكبر */
+    align-items: flex-start; /* يخلي العناصر تبدأ من اليمين (في اتجاه النص) */
+  }
+
+  .sidebar a { /* تنسيقات الروابط داخل القائمة الجانبية */
+    display: flex; /* يخلي الأيقونة والنص جنب بعضهم */
+    align-items: center; /* يخليهم في المنتصف عمودياً */
+    color: var(--text-dark); /* لون الخط */
+    text-decoration: none; /* ينحي الخط اللي تحت الروابط */
+    margin-bottom: 15px; /* مسافة بين كل رابط ورابط */
+    font-weight: 700; /* الخط يكون غليظ */
+    font-size: 1.1rem; /* حجم الخط */
+    border-radius: 10px; /* تقويسة بسيطة للروابط */
+    padding: 10px 14px; /* مسافة داخلية للرابط */
+    transition: background-color 0.3s ease, color 0.3s ease; /* حركة ناعمة لما اللون يتغير */
+    white-space: nowrap; /* يمنع النص من النزول سطر جديد */
+    opacity: 0; /* يكون مختفي لما القائمة تكون مصكرة */
+    pointer-events: none; /* ما تقدرش تضغط عليه لما يكون مختفي */
+    width: 100%; /* ياخذ عرض السايدبار بالكامل */
+  }
+
+  .sidebar.open a { /* تنسيقات الروابط لما القائمة الجانبية تكون مفتوحة */
+    opacity: 1; /* يخليه ظاهر */
+    pointer-events: auto; /* تقدر تضغط عليه */
+  }
+
+  .sidebar a:hover { /* تنسيقات الروابط لما المؤشر يجي عليها */
+    background-color: var(--green-mid); /* الخلفية تصير خضرا متوسطة */
+    color: white; /* لون الخط يصير أبيض */
+  }
+
+  .sidebar a i { /* تنسيقات الأيقونات داخل الروابط */
+    flex-shrink: 0; /* تمنع الأيقونة إنها تصغر */
+    font-size: 1.4rem; /* حجم الأيقونة */
+    color: var(--green-dark); /* لون الأيقونة */
+    margin-left: 12px; /* مسافة على يسار الأيقونة (لأنها قبل النص) */
+  }
+
+  .sidebar.open a i { /* تنسيقات الأيقونات لما القائمة الجانبية مفتوحة */
+    color: var(--green-dark); /* اللون يفضل أخضر غامق */
+  }
+
+  .sidebar a:hover i { /* تنسيقات الأيقونات لما المؤشر يجي عليها */
+    color: white; /* لون الأيقونة يصير أبيض */
+  }
+
+  .sidebar-toggle { /* تنسيقات زر الفتح والإغلاق للقائمة الجانبية */
+    position: absolute; /* مكانها يكون بناءً على العنصر الأب (السايدبار) */
+    top: 15px; /* مسافة 15 بكسل من فوق */
+    left: 15px; /* مسافة 15 بكسل من اليسار */
+    width: 32px; /* عرض الزر */
+    height: 32px; /* طول الزر */
+    background-color: var(--green-dark); /* خلفية الزر خضرا غامقة */
+    border-radius: 50%; /* يخلي الزر دائري */
+    cursor: pointer; /* شكل المؤشر يصير يد لما يجي عليه */
+    display: flex; /* يخلي العلامة اللي داخله في المنتصف */
+    align-items: center; /* يخليها في المنتصف عمودياً */
+    justify-content: center; /* يخليها في المنتصف أفقياً */
+    color: white; /* لون العلامة أبيض */
+    font-weight: bold; /* الخط غليظ */
+    user-select: none; /* ما تقدرش تحدد النص اللي فيه */
+    z-index: 1150; /* يخليه فوق السايدبار نفسه */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); /* ظل خفيف على الزر */
+  }
+
+  /* Main Content Area */
+  .main { /* تنسيقات منطقة المحتوى الرئيسية */
+    top: -100px; /* مسافة سالبة من فوق (نعدلها تحت) */
+    flex-grow: 1; /* يخليها تاخذ المساحة الفاضية بالكامل */
+    padding: 40px 40px 40px 60px; /* مسافة داخلية من كل الجهات */
+    margin-right: var(--sidebar-width-collapsed); /* مسافة من اليمين تكون على قد عرض السايدبار المصكر */
+    transition: margin-right 0.3s ease; /* حركة ناعمة لما المسافة من اليمين تتغير */
+    min-height: calc(100vh - (10px + 2rem + 12px + 12px)); /* أقل ارتفاع ليها */
+    
+  }
+
+  .sidebar.open ~ .main { /* تنسيقات المحتوى الرئيسي لما السايدبار يكون مفتوح */
+    margin-right: var(--sidebar-width-expanded); /* المسافة من اليمين تزيد على قد عرض السايدبار المفتوح */
+  }
+
+  /* Original Card Styles - adjusted for new layout and button */
+  .title { /* تنسيقات العنوان الرئيسي (قائمة المهنيين) */
+    text-align: center; /* يخليه في المنتصف */
+    margin-bottom: 40px; /* مسافة من تحت */
+    /* margin-top: 2px; */
+    top: 5px; /* مسافة 5 بكسل من فوق (نعدلها تحت) */
+  }
+  .title h1 { /* تنسيقات النص داخل العنوان */
+    font-size: 3rem; /* حجم الخط كبير */
+    font-weight: 900; /* الخط غليظ جداً */
+    background: linear-gradient(270deg, /* خلفية متدرجة تظهر كأنها تلمع */
+      #4c7a67, #8bbf8f, #2f5249, #a7c1a8, #4c7a67);
+    background-size: 1000% 100%; /* حجم الخلفية كبير باش تبان حركة التلميع */
+    -webkit-background-clip: text; /* يخلي الخلفية تظهر على النص بس */
+    -webkit-text-fill-color: transparent; /* يخلي لون النص شفاف باش تبان الخلفية اللي وراه */
+    animation: shiny 6s linear infinite; /* حركة التلميع تستمر للأبد */
+    user-select: none; /* ما تقدرش تحدد النص */
+  }
+  @keyframes shiny { /* تعريف حركة التلميع */
+    0% {background-position: 0% 50%;} /* في البداية */
+    100% {background-position: 100% 50%;} /* في النهاية */
+  }
+
+  .cards { /* تنسيقات حاوية البطاقات (اللي فيها المهنيين) */
+    display: flex; /* يخلي البطاقات جنب بعضها */
+    flex-wrap: wrap; /* لما مافيش مكان، البطاقات تنزل سطر جديد */
+    justify-content: center; /* يخلي البطاقات في المنتصف أفقياً */
+    gap: 40px 50px; /* مسافة بين البطاقات (عمودية وأفقية) */
+    flex-grow: 1; /* يخليها تاخذ المساحة الفاضية */
+  }
+
+  .card { /* تنسيقات البطاقة الواحدة للمهني */
+    background: rgba(255, 255, 255, 0.18); /* خلفية بيضاء شفافة شوية */
+    backdrop-filter: blur(14px); /* تأثير ضبابي على الخلفية اللي وراها */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* بوردر خفيف وشفاف */
+    border-radius: 20px; /* تقويسة الزوايا */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* ظل خفيف */
+    width: 450px; /* عرض البطاقة */
+    padding: 50px 25px; /* مسافة داخلية */
+    text-align: center; /* النص في المنتصف */
+    position: relative; /* باش التاق يقعد داخلها صح */
+    transition: /* حركة ناعمة لما يتغير الظل أو حجم البطاقة */
+      box-shadow 0.4s ease,
+      transform 0.4s ease;
+    cursor: default; /* شكل المؤشر يكون عادي */
+    display: none; /* مخفية في البداية، تظهر بالجافاسكريبت */
+    /* بداية التعديلات للتفاصيل الإضافية */
+    display: flex; /* خليها flexbox */
+    flex-direction: column; /* العناصر داخل البطاقة تكون عمودية */
+    align-items: center; /* في المنتصف */
+    text-align: right; /* النص يبدا من اليمين */
+    padding: 30px; /* بادينج مناسب */
+    /* نهاية التعديلات */
+  }
+  .card:hover { /* تنسيقات البطاقة لما المؤشر يجي عليها */
+    box-shadow: /* ظل أكبر وأوضح */
+      0 20px 40px rgba(47, 82, 73, 0.35),
+      0 0 30px var(--green-mid);
+    transform: perspective(800px) rotateY(3deg) scale(1.07); /* حركة 3D وتكبر شوية */
+    cursor: pointer; /* المؤشر يصير يد */
+  }
+  .page-title { /* تنسيقات العنوان العلوي للصفحة */
+      
+    top: 10px;
+    left: 0;
+    right: 0;
+    margin: 24px auto 0 auto;
+
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    z-index: 1200;
+    user-select: none;
+    background: rgb(5 45 27 / 0%);
+    padding: 6px 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    max-width: 90vw;
+    text-align: center;
+    display: block;
+    }
+
+
+  .card img { /* تنسيقات صورة المهني داخل البطاقة */
+    width: 100px; /* عرض الصورة */
+    height: 100px; /* طول الصورة */
+    border-radius: 50%; /* يخلي الصورة دائرية */
+    object-fit: cover; /* يخلي الصورة تغطي المساحة بالكامل من غير ما تتشوه */
+    margin-bottom: 20px; /* مسافة من تحت الصورة */
+    border: 3px solid var(--green-mid); /* بوردر أخضر متوسط حول الصورة */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* ظل خفيف على الصورة */
+  }
+
+  .tag { /* تنسيقات التاق (طبيب، حرفي، معلم) */
+    position: absolute; /* مكانها يكون بناءً على البطاقة */
+    top: 15px; /* مسافة 15 بكسل من فوق */
+    left: 15px; /* مسافة 15 بكسل من اليسار */
+    background-color: var(--green-mid); /* خلفية خضرا متوسطة */
+    color: white; /* لون النص أبيض */
+    font-weight: bold; /* الخط غليظ */
+    padding: 6px 14px; /* مسافة داخلية */
+    border-radius: 20px; /* تقويسة الزوايا تخليها زي الحبة */
+    font-size: 0.9rem; /* حجم الخط صغير شوية */
+    user-select: none; /* ما تقدرش تحدد النص */
+    box-shadow: 0 0 10px rgba(76, 122, 103, 0.8); /* ظل خفيف */
+  }
+
+  /* Buttons Container */
+  .buttons-container { /* حاوية الأزرار (تفاصيل، احجز الآن) */
+    margin-top: 25px; /* مسافة من فوق */
+    display: flex; /* يخلي الأزرار جنب بعضها */
+    justify-content: center; /* يخليهم في المنتصف أفقياً */
+    gap: 15px; /* مسافة بين الأزرار */
+  }
+
+  /* Style for Details button */
+  .btn-details { /* تنسيقات زر التفاصيل */
+    display: none; /* نلغي زر التفاصيل زي ما طلبت */
+    /* باقي التنسيقات مش حتفرق لأن الزر مخفي */
+  }
+
+  /* Style for Book Now button (original styling) */
+  .btn-book { /* تنسيقات زر احجز الآن */
+    padding: 14px 25px; /* مسافة داخلية للزر */
+    background-color: var(--green-dark); /* خلفية خضرا غامقة */
+    border: none; /* مافيش بوردر */
+    border-radius: 30px; /* تقويسة الزوايا تخليها زي الحبة */
+    color: white; /* لون الخط أبيض */
+    font-weight: bold; /* الخط غليظ */
+    font-size: 1.1rem; /* حجم الخط */
+    transition: /* حركة ناعمة لما اللون أو الظل يتغير */
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+    cursor: pointer; /* المؤشر يصير يد */
+    flex: 1; /* يخلي الزر يكبر ويصغر على حسب المساحة */
+    max-width: 180px; /* أقصى عرض للزر */
+  }
+  .btn-book:hover { /* تنسيقات زر احجز الآن لما المؤشر يجي عليه */
+    background-color: #24423a; /* خلفية أغمق شوية */
+    box-shadow: 0 0 20px var(--green-dark); /* ظل أكبر وأوضح */
+  }
+
+  .rating { /* تنسيقات التقييم بالنجوم */
+    margin-top: 15px; /* مسافة من فوق */
+    font-size: 1.3rem; /* حجم النجوم */
+    color: #f4c150; /* لون النجوم (أصفر ذهبي) */
+  }
+  
+  #no-professionals-message { /* رسالة "لا يوجد مهنيون متاحون" */
+      text-align: center; /* النص في المنتصف */
+      margin-top: 50px; /* مسافة من فوق */
+      font-size: 1.5rem; /* حجم الخط */
+      color: var(--text-dark); /* لون الخط */
+      display: none; /* مخفية في البداية، تظهر بالجافاسكريبت */
+  }
+
+  /* تنسيقات الشاشات الصغيرة (الجوالات) */
+  @media (max-width: 768px) {
+    .page-title {
+        font-size: 1.5rem; /* حجم الخط أصغر */
+        padding: 4px 15px; /* مسافة داخلية أصغر */
+    }
+    .layout {
+        padding-top: calc(10px + 1.5rem + 12px + 12px); /* مسافة من فوق تتعدل */
+    }
+    .sidebar {
+        top: calc(10px + 1.5rem + 12px + 12px); /* مكان السايدبار يتعدل */
+        max-height: calc(100vh - (10px + 1.5rem + 12px + 12px) - 10px); /* أقصى ارتفاع يتعدل */
+    }
+    .main {
+        padding: 20px 20px 20px 10px; /* مسافة داخلية أصغر */
+        top: 1px; /* مكان المحتوى يتعدل */
+    }
+    .title h1 {
+        font-size: 2.2rem; /* حجم الخط أصغر */
+    }
+    .cards {
+        gap: 20px 30px; /* مسافة بين البطاقات أصغر */
+    }
+    .card {
+        width: 100%; /* عرض البطاقة ياخذ الشاشة كلها */
+        max-width: 320px; /* لكن مايزيدش عن 320 بكسل */
+        margin: 0 auto; /* يخليها في المنتصف */
+    }
+    .buttons-container {
+        flex-direction: column; /* الأزرار تجي تحت بعضها */
+        gap: 10px; /* مسافة بين الأزرار */
+    }
+    .btn-details, .btn-book {
+        max-width: 100%; /* عرض الزر ياخذ المساحة كلها */
+    }
+  }
+
+/* تنسيقات جديدة للتفاصيل داخل البطاقة */
+.professional-details {
+    width: 100%; /* تاخذ عرض البطاقة بالكامل */
+    text-align: right; /* النص يبدأ من اليمين */
+    margin-top: 15px; /* مسافة من فوق */
+    border-top: 1px solid var(--green-light); /* خط فاصل خفيف */
+    padding-top: 15px; /* مسافة بعد الخط */
+}
+
+.professional-details p {
+    margin-bottom: 8px; /* مسافة بين كل فقرة وتانية */
+    line-height: 1.5; /* تباعد الأسطر */
+    color: var(--text-dark); /* لون الخط */
+    font-size: 0.95rem; /* حجم الخط */
+}
+
+.professional-details strong {
+    color: var(--green-dark); /* لون غليظ للعنوان */
+    font-size: 1rem; /* حجم خط أكبر شوية */
+}
+
+</style>
+</head>
+<body>
+  <div class="page-title">قائمة المهنيين</div> <div class="layout"> <nav id="sidebar" class="sidebar" aria-label="القائمة الجانبية"> <div id="sidebarToggle" class="sidebar-toggle" title="فتح/إغلاق القائمة" aria-pressed="false" role="button" tabindex="0">&#9776;</div> <a href="index.html" title="الرئيسية"> <i class="fas fa-home"></i> <span>الرئيسية</span> </a>
+
+      
+      
+    </nav>
+
+    <div class="main"> <div class="title"> <h1 id="page-title-main"></h1> </div>
+
+      <div class="cards" id="professional-cards-container"> <div class="card" data-name="د. علي الزناتي" data-specialization-text="أخصائي باطنية" data-rating-value="4" data-image="images/doctor-male-2.jpg" data-specialization-id="general-medicine" data-bio="د. علي الزناتي، طبيب باطنية ذو خبرة واسعة في تشخيص وعلاج الأمراض الباطنية المزمنة والحادة، مع التركيز على الرعاية الشاملة للمريض." data-experience="15 سنة" data-clients="أكثر من 500"> <span class="tag">طبيب</span> <img src="images/doctor-male-2.jpg" alt="صورة د. علي الزناتي"> <h2>د. علي الزناتي</h2> <p>أخصائي باطنية</p> <div class="rating">⭐⭐⭐⭐☆</div> <div class="professional-details">
+            <p><strong>الخبرة:</strong> 15 سنة</p> <p><strong>العملاء:</strong> أكثر من 500 عميل</p> <p><strong>نبذة:</strong> د. علي الزناتي، طبيب باطنية ذو خبرة واسعة في تشخيص وعلاج الأمراض الباطنية المزمنة والحادة، مع التركيز على الرعاية الشاملة للمريض.</p> </div>
+          <div class="buttons-container"> <button class="btn-book">احجز الآن</button> </div>
+        </div>
+
+        <div class="card" data-name="م. عبد الله محمود"
+             data-specialization-text="سباك"
+             data-rating-value="4.6"
+             data-image="images/سباك.jpg"
+             data-specialization-id="plumbing"
+             data-bio="م. عبد الله محمود، سباك محترف ذو خبرة في جميع أعمال السباكة، إصلاح التسريبات، وتركيب الأدوات الصحية بحرفية."
+             data-experience="11 سنة"
+             data-clients="أكثر من 300 عميل">
+          <span class="tag">حرفي</span>
+          <img src="images/سباك.jpg" alt="صورة م. عبد الله محمود">
+          <h2>م. عبد الله محمود</h2>
+          <p>سباك</p>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 11 سنة</p>
+            <p><strong>العملاء:</strong> أكثر من 300 عميل</p>
+            <p><strong>نبذة:</strong> م. عبد الله محمود، سباك محترف ذو خبرة في جميع أعمال السباكة، إصلاح التسريبات، وتركيب الأدوات الصحية بحرفية.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="د. نجلاء عبد السلام"
+             data-specialization-text="طبيبة أسنان"
+             data-rating-value="5"
+             data-image="images/doctor-femal.jpg"
+             data-specialization-id="dentistry"
+             data-bio="د. نجلاء عبد السلام، متخصصة في طب الأسنان التجميلي والعلاج التحفظي، ملتزمة بتقديم أفضل الحلول لابتسامة صحية وجميلة."
+             data-experience="10 سنوات"
+             data-clients="أكثر من 300">
+          <span class="tag">طبيب</span>
+          <img src="images/doctor-femal.jpg" alt="صورة د. نجلاء عبد السلام">
+          <h2>د. نجلاء عبد السلام</h2>
+          <p>طبيبة أسنان</p>
+          <div class="rating">⭐⭐⭐⭐⭐</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 10 سنوات</p>
+            <p><strong>العملاء:</strong> أكثر من 300 عميل</p>
+            <p><strong>نبذة:</strong> د. نجلاء عبد السلام، متخصصة في طب الأسنان التجميلي والعلاج التحفظي، ملتزمة بتقديم أفضل الحلول لابتسامة صحية وجميلة.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="د. أحمد المبروك"
+             data-specialization-text="طبيب أطفال"
+             data-rating-value="4.8"
+             data-image="images/doctor-male.jpg"
+             data-specialization-id="pediatrics"
+             data-bio="د. أحمد المبروك، طبيب أطفال ذو قلب كبير وخبرة في التعامل مع مختلف حالات الأطفال، من حديثي الولادة وحتى المراهقين."
+             data-experience="8 سنوات"
+             data-clients="أكثر من 400">
+          <span class="tag">طبيب</span>
+          <img src="images/doctor-male.jpg" alt="صورة د. أحمد المبروك">
+          <h2>د. أحمد المبروك</h2>
+          <p>طبيب أطفال</p>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 8 سنوات</p>
+            <p><strong>العملاء:</strong> أكثر من 400 عميل</p>
+            <p><strong>نبذة:</strong> د. أحمد المبروك، طبيب أطفال ذو قلب كبير وخبرة في التعامل مع مختلف حالات الأطفال، من حديثي الولادة وحتى المراهقين.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="أ. مريم الشريف"
+             data-specialization-text="معلمة رياضيات"
+             data-rating-value="4"
+             data-image="images/teacher-female.jpg"
+             data-specialization-id="mathematics"
+             data-bio="أ. مريم الشريف، معلمة رياضيات شغوفة بتبسيط المفاهيم الصعبة وجعل الرياضيات ممتعة ومفهومة لجميع المستويات."
+             data-experience="7 سنوات"
+             data-clients="أكثر من 200 طالب">
+          <span class="tag">معلم</span>
+          <img src="images/teacher-female.jpg" alt="صورة أ. مريم الشريف">
+          <h2>أ. مريم الشريف</h2>
+          <p>معلمة رياضيات</p>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 7 سنوات</p>
+            <p><strong>العملاء:</strong> أكثر من 200 طالب</p>
+            <p><strong>نبذة:</strong> أ. مريم الشريف، معلمة رياضيات شغوفة بتبسيط المفاهيم الصعبة وجعل الرياضيات ممتعة ومفهومة لجميع المستويات.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="أ. خالد التومي"
+             data-specialization-text="معلم فيزياء"
+             data-rating-value="5"
+             data-image="images/teacher-male.jpg"
+             data-specialization-id="science"
+             data-bio="أ. خالد التومي، معلم فيزياء متميز يستخدم أساليب تدريس مبتكرة لإلهام الطلاب وفهمهم العميق للمبادئ العلمية."
+             data-experience="12 سنة"
+             data-clients="أكثر من 350 طالب">
+          <span class="tag">معلم</span>
+          <img src="images/teacher-male.jpg" alt="صورة أ. خالد التومي">
+          <h2>أ. خالد التومي</h2>
+          <p>معلم فيزياء</p>
+          <div class="rating">⭐⭐⭐⭐⭐</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 12 سنة</p>
+            <p><strong>العملاء:</strong> أكثر من 350 طالب</p>
+            <p><strong>نبذة:</strong> أ. خالد التومي، معلم فيزياء متميز يستخدم أساليب تدريس مبتكرة لإلهام الطلاب وفهمهم العميق للمبادئ العلمية.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="د. سلمى الجمال"
+             data-specialization-text="أخصائية جلدية وتجميل"
+             data-rating-value="4.7"
+             data-image="images/تجميل1.jpg"
+             data-specialization-id="dermatology"
+             data-bio="د. سلمى الجمال، أخصائية جلدية وتجميل بخبرة واسعة في علاجات البشرة، الليزر، وحقن التجميل، لتقديم أفضل النتائج لعملائها."
+             data-experience="12 سنة"
+             data-clients="أكثر من 450">
+          <span class="tag">طبيب</span>
+          <img src="images/تجميل1.jpg" alt="صورة د. سلمى الجمال">
+          <h2>د. سلمى الجمال</h2>
+          <p>أخصائية جلدية وتجميل</p>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 12 سنة</p>
+            <p><strong>العملاء:</strong> أكثر من 450 عميل</p>
+            <p><strong>نبذة:</strong> د. سلمى الجمال، أخصائية جلدية وتجميل بخبرة واسعة في علاجات البشرة، الليزر، وحقن التجميل، لتقديم أفضل النتائج لعملائها.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="أ. فاطمة الزهراء"
+             data-specialization-text="معلمة لغة عربية"
+             data-rating-value="4.5"
+             data-image="images/arabic.jpg"
+             data-specialization-id="arabic-language"
+             data-bio="أ. فاطمة الزهراء، معلمة لغة عربية ذات أسلوب ممتع وشيق، متخصصة في تعليم قواعد اللغة والنحو والأدب لجميع المراحل."
+             data-experience="9 سنوات"
+             data-clients="أكثر من 280 طالب">
+          <span class="tag">معلم</span>
+          <img src="images/arabic.jpg" alt="صورة أ. فاطمة الزهراء">
+          <h2>أ. فاطمة الزهراء</h2>
+          <p>معلمة لغة عربية</p>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 9 سنوات</p>
+            <p><strong>العملاء:</strong> أكثر من 280 طالب</p>
+            <p><strong>نبذة:</strong> أ. فاطمة الزهراء، معلمة لغة عربية ذات أسلوب ممتع وشيق، متخصصة في تعليم قواعد اللغة والنحو والأدب لجميع المراحل.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+          <div class="card" data-name="أ.أمنة أحمد"
+             data-specialization-text="معلمة لغة إنجليزية"
+             data-rating-value="4.9"
+             data-image="images/enghlish.jpg"
+             data-specialization-id="english-language"
+             data-bio="أ.أمنة أحمد، معلمة لغة إنجليزية ذو خبرة واسعة في تدريس المحادثة والقواعد والإعداد للاختبارات الدولية بأسلوب تفاعلي"
+             data-experience="14 سنة"
+             data-clients="أكثر من 500 طالب">
+          <span class="tag">معلمة</span>
+          <img src="images/enghlish.jpg" alt="صورة أ. أمنة أحمد">
+          <h2>أ.أمنة أحمد</h2>
+          <p>معلمة لغة إنجليزية</p>
+          <div class="rating">⭐⭐⭐⭐⭐</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 14 سنة</p>
+            <p><strong>العملاء:</strong> أكثر من 500 طالب</p>
+            <p><strong>نبذة:</strong> أ. أمنة أحمد، معلمة لغة إنجليزية ذو خبرة واسعة في تدريس المحادثة والقواعد والإعداد للاختبارات الدولية بأسلوب تفاعلي.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="م. يوسف العابد"
+             data-specialization-text="فني كهربائي"
+             data-rating-value="4"
+             data-image="images/كهربائي.jpg"
+             data-specialization-id="electricity"
+             data-bio="م. يوسف العابد، فني كهربائي محترف وموثوق به، يقدم حلولًا آمنة وفعالة لجميع المشاكل الكهربائية المنزلية والتجارية."
+             data-experience="10 سنوات"
+             data-clients="أكثر من 250 عميل">
+          <span class="tag">حرفي</span>
+          <img src="images/كهربائي.jpg" alt="صورة م. يوسف العابد">
+          <h2>م. يوسف العابد</h2>
+          <p>فني كهربائي</p>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 10 سنوات</p>
+            <p><strong>العملاء:</strong> أكثر من 250 عميل</p>
+            <p><strong>نبذة:</strong> م. يوسف العابد، فني كهربائي محترف وموثوق به، يقدم حلولًا آمنة وفعالة لجميع المشاكل الكهربائية المنزلية والتجارية.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+        
+
+        <div class="card" data-name="م. حسين النعاس"
+             data-specialization-text="نجار"
+             data-rating-value="5"
+             data-image="images/نجار.jpg"
+             data-specialization-id="carpentry"
+             data-bio="م. حسين النعاس، نجار مبدع يجمع بين الحرفية التقليدية والتصاميم الحديثة، لإنشاء قطع أثاث فريدة وعالية الجودة."
+             data-experience="18 سنة"
+             data-clients="أكثر من 150 عميل">
+          <span class="tag">حرفي</span>
+          <img src="images/نجار.jpg" alt="صورة م. حسين النعاس">
+          <h2>م. حسين النعاس</h2>
+          <p>نجار</p>
+          <div class="rating">⭐⭐⭐⭐⭐</div>
+          <div class="professional-details">
+            <p><strong>الخبرة:</strong> 18 سنة</p>
+            <p><strong>العملاء:</strong> أكثر من 150 عميل</p>
+            <p><strong>نبذة:</strong> م. حسين النعاس، نجار مبدع يجمع بين الحرفية التقليدية والتصاميم الحديثة، لإنشاء قطع أثاث فريدة وعالية الجودة.</p>
+          </div>
+          <div class="buttons-container">
+            <button class="btn-book">احجز الآن</button>
+          </div>
+        </div>
+
+        </div>
+
+      <p id="no-professionals-message"> لا يوجد مهنيون متاحون في هذا التخصص حاليًا.
+      </p>
+    </div>
+  </div>
+
+<script> document.addEventListener('DOMContentLoaded', () => { // لما الصفحة كلها تحمل، هادا الكود يخدم
+  const allCards = document.querySelectorAll('.card'); // يختار كل البطاقات اللي في الصفحة
+  const pageTitleMain = document.getElementById('page-title-main'); // يختار العنوان الرئيسي (اللي فيه قائمة المهنيين)
+  const noProfessionalsMessage = document.getElementById('no-professionals-message'); // يختار رسالة "لا يوجد مهنيون"
+
+  const urlParams = new URLSearchParams(window.location.search); // ياخد معلومات من رابط الصفحة (زي التخصص لو فيه)
+  const specializationFromUrl = urlParams.get('specialization'); // ياخد قيمة التخصص من الرابط
+
+  const specializationTitles = { // قائمة بالعناوين اللي تظهر فوق لكل تخصص
+    'general-medicine': 'أطباء الطب العام',
+    'dentistry': 'أطباء الأسنان',
+    'pediatrics': 'أطباء الأطفال',
+    'dermatology': 'أطباء الجلدية والتجميل',
+    'mathematics': 'مدرسو الرياضيات',
+    'arabic-language': 'مدرسو اللغة العربية',
+    'science': 'مدرسو العلوم (فيزياء، كيمياء، أحياء)',
+    'english-language': 'مدرسو اللغة الإنجليزية',
+    'electricity': 'فنيو الكهرباء',
+    'plumbing': 'السباكون',
+    'carpentry': 'النجارون',
+    'air-conditioning': 'فنيو التكييف والتبريد'
+  };
+
+  let foundSpecializedProfessionals = false; // متغير نعرفوا بيه لو لقينا مهنيين للتخصص المطلوب
+  allCards.forEach(card => card.style.display = 'none'); // في البداية، نخفوا كل البطاقات
+
+  if (specializationFromUrl) { // لو فيه تخصص جاي من الرابط
+    pageTitleMain.textContent = specializationTitles[specializationFromUrl] || "المهنيون المتاحون"; // نحطوا عنوان التخصص، لو ما لقينانش نحطوا "المهنيون المتاحون"
+    allCards.forEach(card => { // نمروا على كل البطاقات
+      if (card.dataset.specializationId === specializationFromUrl) { // لو تخصص البطاقة مطابق للتخصص اللي في الرابط
+        card.style.display = 'flex'; // نظهروا البطاقة (خلينها flex باش تخدم الترتيب الجديد)
+        foundSpecializedProfessionals = true; // نقولوا إننا لقينا مهنيين
+      }
+    });
+    noProfessionalsMessage.style.display = foundSpecializedProfessionals ? 'none' : 'block'; // لو ما لقيناش مهنيين، نظهروا رسالة "لا يوجد مهنيون"
+  } else { // لو مافيش تخصص جاي من الرابط (يعني عرض كل المهنيين)
+    allCards.forEach(card => card.style.display = 'flex'); // نظهروا كل البطاقات
+    pageTitleMain.textContent = "جميع المهنيين المتاحين"; // نحطوا العنوان "جميع المهنيين المتاحين"
+    noProfessionalsMessage.style.display = 'none'; // نخفوا رسالة "لا يوجد مهنيون"
+  }
+
+  const bookButtons = document.querySelectorAll('.btn-book'); // يختار كل أزرار "احجز الآن"
+
+  bookButtons.forEach(button => { // نمروا على كل أزرار "احجز الآن"
+    button.addEventListener('click', (event) => { // لما حد يضغط على الزر
+      const isLoggedIn = localStorage.getItem('loggedIn'); // نشوفوا لو المستخدم مسجل دخول ولا لأ
+
+      if (!isLoggedIn) { // لو مش مسجل دخول
+        alert("سجّل الدخول أولاً."); // نطلعوا رسالة تنبيه
+        
+        const currentURL = window.location.href; // ناخدوا رابط الصفحة اللي أنت فيها توه
+        if (currentURL.includes('index.html') || currentURL.endsWith('/') || currentURL.endsWith('index.html')) {
+          localStorage.setItem('redirectAfterLogin', 'index.html'); // لو أنت في الصفحة الرئيسية، خلي التوجيه بعد الدخول للصفحة الرئيسية
+        } else {
+          localStorage.setItem('redirectAfterLogin', currentURL); // لو في أي صفحة تانية، خلي التوجيه لنفس الصفحة بعد الدخول
+        }
+
+        window.location.href = "login.html"; // نحولك لصفحة تسجيل الدخول
+        return; // خلاص، وقف الكود هنا
+      }
+
+      const card = event.target.closest('.card'); // ياخد البطاقة اللي فيها الزر
+      if (card) { // لو لقى البطاقة
+        const name = card.dataset.name; // ياخد اسم المهني
+        const specializationText = card.dataset.specializationText; // ياخد تخصصه
+        const rating = card.dataset.ratingValue; // ياخد تقييمه
+        const image = card.dataset.image; // ياخد صورة المهني
+
+        const bookingURL = `booking-confirmation.html?professionalName=${encodeURIComponent(name)}&specialization=${encodeURIComponent(specializationText)}&rating=${encodeURIComponent(rating)}&image=${encodeURIComponent(image)}`;
+        
+        window.location.href = bookingURL; // يحولك لصفحة تأكيد الحجز مع البيانات في الرابط
+      }
+    });
+  });
+
+  // --- Sidebar Toggle Logic ---
+  const sidebar = document.getElementById('sidebar'); // يختار القائمة الجانبية
+  const toggleBtn = document.getElementById('sidebarToggle'); // يختار زر فتح وتصكير القائمة
+
+  toggleBtn.addEventListener('click', () => { // لما حد يضغط على زر الفتح والتصكير
+    sidebar.classList.toggle('open'); // يضيف أو ينحي كلاس "open" من السايدبار (هادا اللي يخليه يفتح ويتصكر)
+    toggleBtn.setAttribute('aria-pressed', sidebar.classList.contains('open')); // يغير حالة الزر (مفتوح/مصكر) عشان تساعد الناس اللي تستخدم برامج قراءة الشاشة
+  });
+
+  document.addEventListener('click', (e) => { // لما حد يضغط في أي مكان في الصفحة
+    const isClickInsideSidebar = sidebar.contains(e.target); // يشوف لو الضغطة كانت داخل السايدبار
+    const isClickOnToggle = toggleBtn.contains(e.target); // يشوف لو الضغطة كانت على زر الفتح والتصكير
+
+    if (!isClickInsideSidebar && !isClickOnToggle) { // لو الضغطة ما كانتش لا داخل السايدبار ولا على الزر
+      sidebar.classList.remove('open'); // يصكر السايدبار
+      toggleBtn.setAttribute('aria-pressed', false); // يرجع حالة الزر إنه مصكر
+    }
+  });
+
+}); // نهاية كود الجافاسكريبت
+</script>
+
+</body>
+</html>

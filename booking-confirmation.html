@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تأكيد وتحديد موعد - Hagzi</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --color-dark-green: #2F5249;
+            --color-mid-green: #a7c1a8;
+            --color-light-green: #d1d8be;
+            --color-very-light: #f6f6f2;
+            --color-text-dark: #3b3b4f;
+            --color-red: #e74c3c;
+            --color-blue: #3498db;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            background-color: var(--color-very-light);
+            color: var(--color-text-dark);
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        .InputContainer {
+            max-width: 280px;
+            flex-shrink: 0;
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 40px;
+            border: 2px solid var(--color-mid-green);
+            outline: none;
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            color: var(--color-text-dark);
+            direction: rtl;
+            transition: border-color 0.3s ease;
+        }
+
+        .input::placeholder {
+            color: var(--color-mid-green);
+            font-weight: 400;
+        }
+
+        .input:focus {
+            border-color: var(--color-mid-green);
+            box-shadow: 0 0 8px rgba(167, 193, 168, 0.7);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(129, 154, 145, 0.1);
+        }
+
+        .booking-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--color-light-green);
+            padding-bottom: 20px;
+        }
+
+        .booking-header h1 {
+            color: var(--color-dark-green);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .booking-header p {
+            color: var(--color-text-dark);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .professional-info {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            background-color: var(--color-light-green);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .professional-info img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-mid-green);
+        }
+
+        .professional-details h2 {
+            color: var(--color-dark-green);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .professional-details p {
+            color: var(--color-text-dark);
+            font-size: 1.05rem;
+            margin-bottom: 5px;
+        }
+
+        .appointment-selection {
+            margin-top: 35px;
+        }
+
+        .appointment-selection h3 {
+            color: var(--color-dark-green);
+            font-size: 1.7rem;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .calendar {
+            background-color: var(--color-very-light);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .calendar-nav button {
+            background-color: var(--color-mid-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .calendar-nav button:hover {
+            background-color: var(--color-dark-green);
+            transform: translateY(-2px);
+        }
+
+        .calendar-nav h4 {
+            font-size: 1.6rem;
+            color: var(--color-dark-green);
+            margin: 0 15px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .day-name {
+            font-weight: 700;
+            color: var(--color-dark-green);
+            font-size: 1rem;
+        }
+
+        .day-cell {
+            padding: 12px 0;
+            background-color: #e0e6e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--color-text-dark);
+            user-select: none;
+        }
+
+        .day-cell.current-month {
+            background-color: var(--color-light-green);
+        }
+
+        .day-cell.selected {
+            background-color: var(--color-dark-green);
+            color: var(--color-very-light);
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .day-cell.disabled {
+            background-color: #ccc;
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--color-very-light);
+            border-radius: 15px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+            min-height: 100px; /* لضمان ظهور الخلفية حتى لو لا توجد أوقات */
+        }
+
+        .time-slot {
+            background-color: var(--color-mid-green);
+            color: var(--color-very-light);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1.05rem;
+            font-weight: 600;
+            user-select: none;
+            border: 2px solid transparent; /* لجعل الحدود تظهر عند التحديد */
+        }
+
+        .time-slot:hover {
+            background-color: var(--color-dark-green);
+            transform: translateY(-2px);
+        }
+
+        .time-slot.selected {
+            background-color: var(--color-dark-green);
+            border-color: var(--color-light-green);
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .confirm-button-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .confirm-button {
+            background-color: var(--color-dark-green);
+            color: var(--color-very-light);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-weight: 700;
+        }
+
+        .confirm-button:hover {
+            background-color: #1a3a31;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            background: var(--color-dark-green);
+            color: var(--color-very-light);
+            text-align: center;
+            padding: 28px 22px;
+            font-size: 0.9rem;
+            user-select: none;
+            margin-top: auto;
+            line-height: 1.6;
+        }
+
+        .footer a {
+            color: var(--color-light-green);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                margin: 8px 10px;
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .logo {
+                font-size: 30px;
+                margin-bottom: 10px;
+            }
+
+            nav {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+                order: 3; /* لجعل الروابط تظهر في سطر جديد أسفل الشعار وحقل البحث */
+            }
+
+            .links {
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .InputContainer {
+                max-width: 100%;
+                margin-top: 10px;
+                order: 2;
+            }
+
+            .menu-icon {
+                display: block;
+                position: absolute;
+                left: 20px;
+                top: 20px;
+            }
+
+            #menu-toggle:checked + .menu-icon + .links {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            main {
+                padding: 25px 15px;
+                margin: 15px auto;
+            }
+
+            .booking-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .professional-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .professional-info img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .professional-details h2 {
+                font-size: 1.5rem;
+            }
+
+            .appointment-selection h3 {
+                font-size: 1.5rem;
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            }
+
+            .day-cell {
+                padding: 8px 0;
+                font-size: 0.9rem;
+            }
+
+            .time-slots {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .time-slot {
+                width: 80%;
+                text-align: center;
+            }
+
+            .confirm-button {
+                font-size: 1.2rem;
+                padding: 12px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <main dir="rtl">
+        <section class="booking-header">
+            <h1>تأكيد وتحديد موعد</h1>
+            <p>اختر التاريخ والوقت المناسبين لك لإكمال حجز موعدك مع <span id="professional-name-header">...</span>.</p>
+        </section>
+
+        <section class="professional-info">
+            <img id="professional-image" src="images/placeholder-avatar.png" alt="صورة المهني" />
+            <div class="professional-details">
+                <h2 id="professional-name">اسم المهني/الطبيب</h2>
+                <p>التخصص: <span id="professional-specialization">...</span></p>
+                <p>التقييم: <span id="professional-rating">...</span></p>
+            </div>
+        </section>
+
+        <section class="appointment-selection">
+            <h3>اختر تاريخ الموعد:</h3>
+            <div class="calendar">
+                <div class="calendar-nav">
+                    <button id="prev-month">الشهر السابق</button>
+                    <h4 id="current-month-year">يناير 2025</h4>
+                    <button id="next-month">الشهر التالي</button>
+                </div>
+                <div class="days-grid" id="calendar-days-grid">
+                    <div class="day-name">أحد</div>
+                    <div class="day-name">اثنين</div>
+                    <div class="day-name">ثلاثاء</div>
+                    <div class="day-name">أربعاء</div>
+                    <div class="day-name">خميس</div>
+                    <div class="day-name">جمعة</div>
+                    <div class="day-name">سبت</div>
+                    </div>
+            </div>
+
+            <h3>اختر وقت الموعد:</h3>
+            <div class="time-slots" id="time-slots-container">
+                <p style="color: var(--color-text-dark); opacity: 0.7;">يرجى اختيار تاريخ لعرض الأوقات المتاحة.</p>
+            </div>
+
+            <div class="confirm-button-container">
+                <button class="confirm-button" id="confirm-appointment-button" disabled>تأكيد الموعد</button>
+            </div>
+        </section>
+    </main>
+
+    <div class="footer">
+        <p>
+            منصة حجز المواعيد تم تطويرها بإتقان وجهود مميزة من فريق المهندسين: زينب البشير، ريان عبد الوهاب، وياسمين العلام.<br />
+            جميع الحقوق محفوظة © 2025
+        </p>
+    </div>
+
+    <script>
+        // هنا سنضيف كود JavaScript لاحقاً لمعالجة:
+        // 1. جلب بيانات المهني من URL (مثلاً، باستخدام بارامترات Query).
+        // 2. تحديث معلومات المهني في الصفحة.
+        // 3. بناء التقويم ديناميكياً وعرض الأيام.
+        // 4. عرض الأوقات المتاحة لليوم المختار.
+        // 5. تمكين زر التأكيد عند اختيار يوم ووقت.
+        // 6. التعامل مع منطق حجز الموعد الفعلي (قد يتطلب API لاحقاً).
+
+        // مثال مبدئي جداً لكيفية قراءة بيانات من URL (سنطورها لاحقاً)
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const professionalName = params.get('professionalName') || 'المهني المحدد';
+            const professionalSpecialization = params.get('specialization') || 'غير معروف';
+            const professionalRating = params.get('rating') || 'غير متوفر';
+            const professionalImage = params.get('image') || 'images/placeholder-avatar.png'; // استخدم صورة افتراضية
+
+            document.getElementById('professional-name-header').textContent = professionalName;
+            document.getElementById('professional-name').textContent = professionalName;
+            document.getElementById('professional-specialization').textContent = professionalSpecialization;
+            document.getElementById('professional-rating').textContent = professionalRating;
+            document.getElementById('professional-image').src = professionalImage;
+
+            // ***** منطق التقويم واختيار الوقت سيكون هنا *****
+            // سنبني هذا الجزء في مرحلة لاحقة لأنه يتطلب بعض التعقيد
+            // لإنشاء التقويم ديناميكيًا وعرض الأوقات المتاحة لكل يوم.
+            // حاليا، الأوقات ستكون ثابتة.
+
+            const timeSlotsContainer = document.getElementById('time-slots-container');
+            const confirmButton = document.getElementById('confirm-appointment-button');
+            let selectedDate = null;
+            let selectedTime = null;
+
+            // وظيفة مؤقتة لعرض الأيام في التقويم (ستتغير لاحقاً لتكون ديناميكية بالكامل)
+            function renderCalendar(month, year) {
+                const daysGrid = document.getElementById('calendar-days-grid');
+                daysGrid.innerHTML = `
+                    <div class="day-name">أحد</div>
+                    <div class="day-name">اثنين</div>
+                    <div class="day-name">ثلاثاء</div>
+                    <div class="day-name">أربعاء</div>
+                    <div class="day-name">خميس</div>
+                    <div class="day-name">جمعة</div>
+                    <div class="day-name">سبت</div>
+                `; // إعادة تعيين الأيام لإزالة القديم
+
+                const today = new Date();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+
+                const firstDayOfMonth = new Date(year, month, 1);
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const firstDayOfWeek = firstDayOfMonth.getDay(); // 0 for Sunday, 1 for Monday, etc.
+
+                document.getElementById('current-month-year').textContent = new Date(year, month).toLocaleString('ar-EG', { month: 'long', year: 'numeric' });
+
+                // إضافة خلايا فارغة للأيام قبل بداية الشهر
+                for (let i = 0; i < firstDayOfWeek; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.classList.add('day-cell', 'disabled');
+                    daysGrid.appendChild(emptyCell);
+                }
+
+                // إضافة خلايا الأيام
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.classList.add('day-cell');
+                    dayCell.textContent = day;
+                    dayCell.dataset.date = `${year}-${month + 1}-${day}`; // Format YYYY-MM-DD
+
+                    const date = new Date(year, month, day);
+
+                    // تعطيل الأيام الماضية
+                    if (date < today && !(date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear())) {
+                         dayCell.classList.add('disabled');
+                         dayCell.style.cursor = 'not-allowed';
+                    } else {
+                        dayCell.classList.add('current-month');
+                        dayCell.addEventListener('click', () => handleDayClick(dayCell, date));
+                    }
+                    daysGrid.appendChild(dayCell);
+                }
+            }
+
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
+
+            renderCalendar(currentMonth, currentYear);
+
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar(currentMonth, currentYear);
+                // إعادة تعيين الأوقات المختارة عند تغيير الشهر
+                selectedDate = null;
+                selectedTime = null;
+                updateTimeSlotsDisplay([]); // مسح الأوقات المعروضة
+                confirmButton.disabled = true;
+            });
+
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar(currentMonth, currentYear);
+                 // إعادة تعيين الأوقات المختارة عند تغيير الشهر
+                 selectedDate = null;
+                 selectedTime = null;
+                 updateTimeSlotsDisplay([]); // مسح الأوقات المعروضة
+                 confirmButton.disabled = true;
+            });
+
+
+            // وظيفة لعرض الأوقات المتاحة لليوم المحدد (هذه البيانات ستكون وهمية الآن)
+            function updateTimeSlotsDisplay(availableTimes) {
+                timeSlotsContainer.innerHTML = '';
+                if (availableTimes.length === 0) {
+                    timeSlotsContainer.innerHTML = '<p style="color: var(--color-text-dark); opacity: 0.7;">لا توجد أوقات متاحة لهذا اليوم.</p>';
+                    return;
+                }
+                availableTimes.forEach(time => {
+                    const timeSlot = document.createElement('div');
+                    timeSlot.classList.add('time-slot');
+                    timeSlot.textContent = time;
+                    timeSlot.addEventListener('click', () => handleTimeSlotClick(timeSlot, time));
+                    timeSlotsContainer.appendChild(timeSlot);
+                });
+            }
+
+            // وظيفة للتعامل مع النقر على يوم في التقويم
+            function handleDayClick(clickedDayElement, date) {
+                // إزالة التحديد من أي يوم آخر
+                const previouslySelectedDay = document.querySelector('.day-cell.selected');
+                if (previouslySelectedDay) {
+                    previouslySelectedDay.classList.remove('selected');
+                }
+                // تحديد اليوم الجديد
+                clickedDayElement.classList.add('selected');
+                selectedDate = date; // حفظ التاريخ المحدد
+
+                // عرض أوقات وهمية (هذا الجزء سيتم تحديثه لاحقاً لجلب الأوقات الفعلية)
+                const mockTimes = ["09:00 ص", "10:00 ص", "11:00 ص", "01:00 م", "02:00 م", "03:00 م", "04:00 م"];
+                updateTimeSlotsDisplay(mockTimes);
+
+                // إعادة ضبط الوقت المحدد وزر التأكيد
+                selectedTime = null;
+                confirmButton.disabled = true;
+            }
+
+            // وظيفة للتعامل مع النقر على وقت متاح
+            function handleTimeSlotClick(clickedTimeElement, time) {
+                // إزالة التحديد من أي وقت آخر
+                const previouslySelectedTime = document.querySelector('.time-slot.selected');
+                if (previouslySelectedTime) {
+                    previouslySelectedTime.classList.remove('selected');
+                }
+                // تحديد الوقت الجديد
+                clickedTimeElement.classList.add('selected');
+                selectedTime = time; // حفظ الوقت المحدد
+
+                // تفعيل زر التأكيد
+                confirmButton.disabled = false;
+            }
+
+            // التعامل مع زر تأكيد الموعد
+            confirmButton.addEventListener('click', () => {
+                if (selectedDate && selectedTime) {
+                    alert(`تم تأكيد موعدك مع ${professionalName} في تاريخ ${selectedDate.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} الساعة ${selectedTime}.`);
+                    // هنا يمكن إضافة منطق لإرسال البيانات إلى الخادم أو الانتقال لصفحة نجاح الحجز
+                } else {
+                    alert('الرجاء اختيار تاريخ ووقت للموعد.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

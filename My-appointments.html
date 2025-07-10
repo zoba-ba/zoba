@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>مواعيدي</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<style>
+  :root {
+    --color-dark-green: #2f5249;
+    --color-mid-green: #4c7a67;
+    --color-light-green: #a7c1a8;
+    --color-bg: #f1f5f2;
+    --color-text-dark: #2a2a2a;
+    --color-danger: #c43d3d;
+    --color-accent: #6b9e8a; /* لون جديد للتركيز واللمسات */
+  }
+
+  body {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    background: linear-gradient(135deg, #d6e4d5, #e9f0ec);
+    margin: 0;
+    padding: 30px 40px;
+    color: var(--color-text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header Styles */
+  .main-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center content initially */
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .back-button {
+    position: absolute;
+    right: 0; /* Align to the right in RTL */
+    font-size: 2rem;
+    color: var(--color-dark-green);
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+    padding: 10px;
+    border-radius: 50%;
+  }
+
+  .back-button:hover {
+    color: var(--color-mid-green);
+    transform: translateX( -5px); /* Move slightly left for RTL */
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 3.2rem;
+    font-weight: 900;
+    color: var(--color-dark-green);
+    position: relative;
+    user-select: none;
+    margin: 0; /* Remove default margin to control spacing with header */
+    padding: 0 60px; /* Add padding to make space for the back button */
+  }
+  h1::after {
+    content: '';
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: -12px;
+    height: 6px;
+    background: linear-gradient(90deg, var(--color-mid-green), var(--color-light-green), var(--color-mid-green));
+    border-radius: 6px;
+    filter: blur(7px);
+    animation: shine 4s infinite;
+  }
+  @keyframes shine {
+    0%, 100% {background-position: 0%;}
+    50% {background-position: 100%;}
+  }
+
+  .appointments {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px 40px;
+    justify-content: center;
+    flex-grow: 1; /* Allow appointments section to grow and take available space */
+  }
+
+  .appointment-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow:
+      0 8px 16px rgba(47, 82, 73, 0.1),
+      0 0 12px rgba(167, 193, 168, 0.25);
+    padding: 30px 35px;
+    width: 320px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    color: var(--color-text-dark);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeSlideUp 0.7s forwards;
+    height: 300px; /* Fixed height for consistency */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Align content to the right in RTL */
+    text-align: right; /* Align text to the right in RTL */
+  }
+  .appointment-card:nth-child(1) { animation-delay: 0.1s; }
+  .appointment-card:nth-child(2) { animation-delay: 0.2s; }
+  .appointment-card:nth-child(3) { animation-delay: 0.3s; }
+  .appointment-card:nth-child(4) { animation-delay: 0.4s; }
+  .appointment-card:nth-child(5) { animation-delay: 0.5s; }
+  .appointment-card:nth-child(6) { animation-delay: 0.6s; }
+
+  @keyframes fadeSlideUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .appointment-card:hover {
+    transform: translateY(-12px) scale(1.04);
+    box-shadow:
+      0 20px 40px rgba(47, 82, 73, 0.3),
+      0 0 25px var(--color-mid-green);
+  }
+
+  .appointment-card img {
+    position: absolute;
+    top: 20px;
+    left: 25px; /* Position image to the left in RTL */
+    opacity: 0.15;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .details {
+    margin-bottom: auto; /* Push buttons to the bottom */
+  }
+  .professional-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--color-dark-green);
+  }
+  .datetime {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    color: var(--color-mid-green);
+  }
+  .status {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-top: 15px; /* Add some space for status */
+    text-align: right;
+  }
+
+  .status.confirmed {
+    color: #3aaa35;
+  }
+  .status.pending {
+    color: #e6a300;
+  }
+  .status.cancelled {
+    color: var(--color-danger);
+  }
+
+  .btn-cancel {
+    width: calc(100% - 75px); /* Adjusted width to account for padding/positioning */
+    background-color: var(--color-light-green);
+    border: none;
+    border-radius: 30px;
+    padding: 12px 28px;
+    font-weight: 700;
+    color: var(--color-dark-green);
+    cursor: pointer;
+    box-shadow: 0px 0px 2px 1px var(--color-mid-green);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    margin-top: 20px; /* Space above the button */
+    align-self: center; /* Center the button within the flex container */
+  }
+  .btn-cancel:hover {
+    background-color: var(--color-danger);
+    color: white;
+    box-shadow: 0 0 20px var(--color-danger);
+  }
+
+  .cancelled-text {
+    width: calc(100% - 75px);
+    text-align: center;
+    margin-top: 20px;
+    color: var(--color-danger);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 720px) {
+    body {
+      padding: 20px;
+    }
+    .main-header {
+      flex-direction: column;
+      margin-bottom: 30px;
+    }
+    .back-button {
+      position: static; /* Remove absolute positioning on small screens */
+      margin-bottom: 20px; /* Add space below the button */
+      align-self: flex-start; /* Align to the start in column layout */
+    }
+    h1 {
+      font-size: 2.5rem;
+      padding: 0; /* Remove padding */
+    }
+    .appointments {
+      justify-content: center;
+      gap: 20px;
+    }
+    .appointment-card {
+      width: 100%;
+      max-width: 350px; /* Slightly reduce max-width for better fit */
+      height: auto; /* Allow height to adjust */
+      padding: 25px;
+      align-items: center; /* Center content in column on small screens */
+      text-align: center; /* Center text in column */
+    }
+    .appointment-card img {
+      position: static; /* Remove absolute positioning */
+      margin-bottom: 20px; /* Space below image */
+    }
+    .details {
+      margin-right: 0;
+      width: 100%;
+    }
+    .professional-name, .datetime, .status {
+      text-align: center; /* Center text */
+    }
+    .btn-cancel, .cancelled-text {
+      position: static;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 250px; /* Limit button width */
+      text-align: center;
+      border-radius: 35px;
+    }
+  }
+
+  /* Added Animations for details on hover */
+  .appointment-card:hover .professional-name {
+    color: var(--color-accent);
+    transition: color 0.3s ease;
+  }
+
+  .appointment-card:hover .datetime {
+    color: var(--color-dark-green);
+    transition: color 0.3s ease;
+  }
+</style>
+</head>
+<body>
+
+  <header class="main-header">
+   
+    <h1>مواعيدي</h1>
+  </header>
+
+  <div class="appointments">
+
+    <div class="appointment-card" data-status="confirmed">
+        <img class="html-logo" height="100px" src="images/doctor.png" alt="أطباء" />
+      <div class="details">
+        <div class="professional-name">د. علي الزناتي</div>
+        <div class="datetime">التاريخ: 2025-07-10 – الساعة 10:00 صباحاً</div>
+        <div class="status confirmed">مؤكد</div>
+      </div>
+      <button class="btn-cancel" title="إلغاء الموعد">إلغاء</button>
+    </div>
+
+    <div class="appointment-card" data-status="pending">
+        <img class="css-logo" height="100px" src="images/teach.png" alt="معلمين" />
+      <div class="details">
+        <div class="professional-name">أ. مريم الشريف</div>
+        <div class="datetime">التاريخ: 2025-07-12 – الساعة 4:00 مساءً</div>
+        <div class="status pending">معلق</div>
+      </div>
+      <button class="btn-cancel" title="إلغاء الموعد">إلغاء</button>
+    </div>
+
+    <div class="appointment-card" data-status="cancelled">
+        <img class="js-logo" height="120px" src="images/artisan (1).png" alt="حرفيون" />
+      <div class="details">
+        <div class="professional-name">م. يوسف العابد</div>
+        <div class="datetime">التاريخ: 2025-07-14 – الساعة 1:30 مساءً</div>
+        <div class="status cancelled">ملغي</div>
+      </div>
+      <span class="cancelled-text">تم الإلغاء</span>
+    </div>
+
+    <div class="appointment-card" data-status="confirmed">
+        <img class="html-logo" height="100px" src="images/doctor.png" alt="أطباء" />
+      <div class="details">
+        <div class="professional-name">د. نجلاء عبد السلام</div>
+        <div class="datetime">التاريخ: 2025-07-16 – الساعة 9:00 صباحاً</div>
+        <div class="status confirmed">مؤكد</div>
+      </div>
+      <button class="btn-cancel" title="إلغاء الموعد">إلغاء</button>
+    </div>
+
+    <div class="appointment-card" data-status="pending">
+        <img class="css-logo" height="100px" src="images/teach.png" alt="معلمين" />
+      <div class="details">
+        <div class="professional-name">أ. خالد التومي</div>
+        <div class="datetime">التاريخ: 2025-07-18 – الساعة 2:00 مساءً</div>
+        <div class="status pending">معلق</div>
+      </div>
+      <button class="btn-cancel" title="إلغاء الموعد">إلغاء</button>
+    </div>
+
+    <div class="appointment-card" data-status="confirmed">
+        <img class="js-logo" height="120px" src="images/artisan (1).png" alt="حرفيون" />
+      <div class="details">
+        <div class="professional-name">م. حسين النعاس</div>
+        <div class="datetime">التاريخ: 2025-07-20 – الساعة 11:00 صباحاً</div>
+        <div class="status confirmed">مؤكد</div>
+      </div>
+      <button class="btn-cancel" title="إلغاء الموعد">إلغاء</button>
+    </div>
+
+  </div>
+
+</body>
+</html>

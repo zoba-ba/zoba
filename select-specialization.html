@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hagzi - اختيار التخصص</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --color-dark-green: #2F5249;
+            --color-mid-green: #a7c1a8;
+            --color-light-green: #d1d8be;
+            --color-very-light: #f6f6f2;
+            --color-text-dark: #3b3b4f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            background-color: var(--color-very-light);
+            color: var(--color-text-dark);
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--color-text-dark);
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            font-size: 0.85rem;
+            border-radius: 14px;
+            padding: 10px 16px;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(167, 193, 168, 0.3);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 38px;
+            color: var(--color-dark-green);
+            letter-spacing: 0.08em;
+            user-select: none;
+            transition: transform 0.4s ease, text-shadow 0.4s ease;
+            cursor: pointer;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(-1deg);
+            text-shadow: 0 2px 4px rgba(167, 193, 168, 0.4);
+        }
+
+        nav {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        .menu-icon {
+            display: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--color-text-dark);
+            user-select: none;
+        }
+
+        .links {
+            display: flex;
+            justify-content: flex-start;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        .link {
+            text-decoration: none;
+            color: var(--color-dark-green);
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .link:hover {
+            background-color: var(--color-mid-green);
+            color: var(--color-very-light);
+        }
+
+        .InputContainer {
+            max-width: 250px;
+            flex-shrink: 0;
+        }
+
+        .input {
+            width: 100%;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 30px;
+            border: 2px solid var(--color-mid-green);
+            outline: none;
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            color: var(--color-text-dark);
+            direction: rtl;
+            transition: border-color 0.3s ease;
+        }
+
+        .input::placeholder {
+            color: var(--color-mid-green);
+            font-weight: 400;
+        }
+
+        .input:focus {
+            border-color: var(--color-mid-green);
+            box-shadow: 0 0 8px rgba(167, 193, 168, 0.7);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 45px 20px;
+            max-width: 1100px;
+            margin: 30px auto;
+            width: 100%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--color-dark-green);
+            margin-bottom: 50px;
+            font-weight: 800;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            background-color: var(--color-mid-green);
+            border-radius: 5px;
+        }
+
+        .specialization-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .specialization-card {
+            background-color: var(--color-light-green);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 6px 18px rgba(129, 154, 145, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* text-decoration: none; Ensure links don't have underline */
+            color: inherit; /* Inherit text color */
+            text-decoration: none;
+        }
+
+        .specialization-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(129, 154, 145, 0.25);
+            background-color: var(--color-mid-green);
+            color: var(--color-very-light);
+        }
+
+        .specialization-card:hover h3 {
+            color: var(--color-very-light);
+        }
+
+        .specialization-card:hover .icon {
+            color: var(--color-dark-green); /* Changed to dark green on hover for contrast */
+        }
+
+        .specialization-card .icon {
+            font-size: 3.5rem;
+            color: var(--color-dark-green);
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .specialization-card h3 {
+            font-size: 1.6rem;
+            color: var(--color-dark-green);
+            margin-bottom: 10px;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .specialization-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--color-text-dark);
+        }
+        
+        .specialization-card:hover p {
+            color: var(--color-very-light);
+        }
+
+        .footer {
+            background: var(--color-dark-green);
+            color: var(--color-very-light);
+            text-align: center;
+            padding: 28px 22px;
+            font-size: 0.9rem;
+            user-select: none;
+            margin-top: auto;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .footer a {
+            color: var(--color-light-green);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Utility class for hiding elements */
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                margin: 10px 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .logo {
+                font-size: 32px;
+                margin-bottom: 10px;
+            }
+            nav {
+                margin: 10px 0;
+                width: 100%;
+                text-align: center;
+            }
+            .links {
+                justify-content: center;
+            }
+            .InputContainer {
+                width: 80%;
+                max-width: 350px;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .specialization-grid {
+                grid-template-columns: 1fr;
+            }
+            .specialization-card {
+                width: 90%;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav .links {
+                display: none;
+            }
+
+            .menu-icon {
+                display: block;
+                order: -1;
+                margin-left: 15px;
+            }
+            header {
+                padding: 10px;
+            }
+            .InputContainer {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header dir="rtl">
+        <div class="logo" dir="ltr">Hagzi</div>
+        <nav>
+            <input type="checkbox" id="menu-toggle" />
+            <label for="menu-toggle" class="menu-icon">☰</label>
+            <div class="links">
+                <a href=" index.html#about-section" class="link">من نحن</a>
+                <a href=" index.html#social-section" class="link">المساعدة</a>
+            </div>
+        </nav>
+        <div class="InputContainer">
+            <input placeholder="ابحث عن تخصص..." id="input" class="input" name="text" type="text" dir="rtl" />
+        </div>
+    </header>
+
+    <main dir="rtl">
+        <h2 class="section-title" id="specialization-section-title">اختر التخصص المناسب لك</h2>
+
+        <div class="specialization-grid">
+            <a href="professional-list.html?specialization=general-medicine" class="specialization-card doctor-specialization">
+                <i class="fas fa-stethoscope icon"></i>
+                <h3>الطب العام</h3>
+                <p>تخصصات متنوعة للاستشارات الطبية العامة والرعاية الأولية.</p>
+            </a>
+            <a href="professional-list.html?specialization=dentistry" class="specialization-card doctor-specialization">
+                <i class="fas fa-tooth icon"></i>
+                <h3>طب الأسنان</h3>
+                <p>أطباء أسنان متخصصون في التركيبات، التقويم، والجراحة.</p>
+            </a>
+            <a href="professional-list.html?specialization=pediatrics" class="specialization-card doctor-specialization">
+                <i class="fas fa-child icon"></i>
+                <h3>طب الأطفال</h3>
+                <p>رعاية طبية متكاملة لصحة وسلامة الأطفال من جميع الأعمار.</p>
+            </a>
+            <a href="professional-list.html?specialization=dermatology" class="specialization-card doctor-specialization">
+                <i class="fas fa-spa icon"></i>
+                <h3>الجلدية والتجميل</h3>
+                <p>خبراء في علاج الأمراض الجلدية والعناية بالبشرة.</p>
+            </a>
+            <a href="professional-list.html?specialization=mathematics" class="specialization-card teacher-specialization">
+                <i class="fas fa-calculator icon"></i>
+                <h3>الرياضيات</h3>
+                <p>مدرسون متخصصون في جميع فروع الرياضيات للمراحل المختلفة.</p>
+            </a>
+            <a href="professional-list.html?specialization=arabic-language" class="specialization-card teacher-specialization">
+                <i class="fas fa-book-open icon"></i>
+                <h3>اللغة العربية</h3>
+                <p>مدرسون للغة العربية، النحو، الأدب، والكتابة الإبداعية.</p>
+            </a>
+            <a href="professional-list.html?specialization=science" class="specialization-card teacher-specialization">
+                <i class="fas fa-flask icon"></i>
+                <h3>العلوم (فيزياء، كيمياء، أحياء)</h3>
+                <p>مدرسون لتبسيط مفاهيم العلوم المعقدة للطلاب.</p>
+            </a>
+            <a href="professional-list.html?specialization=english-language" class="specialization-card teacher-specialization">
+                <i class="fas fa-globe icon"></i>
+                <h3>اللغة الإنجليزية</h3>
+                <p>تعليم اللغة الإنجليزية من الأساسيات حتى المستويات المتقدمة.</p>
+            </a>
+            <a href="professional-list.html?specialization=electricity" class="specialization-card artisan-specialization">
+                <i class="fas fa-bolt icon"></i>
+                <h3>كهرباء</h3>
+                <p>فنيون متخصصون في التركيبات الكهربائية والصيانة المنزلية.</p>
+            </a>
+            <a href="professional-list.html?specialization=plumbing" class="specialization-card artisan-specialization">
+                <i class="fas fa-faucet icon"></i>
+                <h3>سباكة</h3>
+                <p>سباكون محترفون لإصلاح التسربات وتركيب الأدوات الصحية.</p>
+            </a>
+            <a href="professional-list.html?specialization=carpentry" class="specialization-card artisan-specialization">
+                <i class="fas fa-hammer icon"></i>
+                <h3>نجارة</h3>
+                <p>نجارون لجميع أعمال الخشب، الأثاث، والتركيبات.</p>
+            </a>
+            <a href="professional-list.html?specialization=air-conditioning" class="specialization-card artisan-specialization">
+                <i class="fas fa-wind icon"></i>
+                <h3>تكييف وتبريد</h3>
+                <p>خبراء في صيانة وتركيب أجهزة التكييف والتبريد.</p>
+            </a>
+            </div>
+    </main>
+
+    <div class="footer">
+        <p>
+            منصة حجز المواعيد تم تطويرها بإتقان وجهود مميزة من فريق المهندسين: زينب البشير، ريان عبد الوهاب، وياسمين
+            العلام.<br />
+            جميع الحقوق محفوظة © 2025
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.getElementById('menu-toggle');
+            const navLinks = document.querySelector('header nav .links');
+
+            // Toggle menu on small screens
+            menuToggle.addEventListener('change', () => {
+                if (window.innerWidth <= 480) {
+                    navLinks.style.display = menuToggle.checked ? 'flex' : 'none';
+                    navLinks.style.flexDirection = 'column';
+                    navLinks.style.alignItems = 'center';
+                    navLinks.style.width = '100%';
+                    navLinks.style.marginTop = '15px';
+                }
+            });
+
+            // Hide menu if screen resized to larger
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 480) {
+                    navLinks.style.display = 'flex';
+                    navLinks.style.flexDirection = 'row';
+                } else {
+                    navLinks.style.display = menuToggle.checked ? 'flex' : 'none';
+                }
+            });
+
+            // --- Dynamic Specialization Display Logic ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category'); // Get the category from the URL (e.g., 'doctors', 'teachers', 'artisans')
+            const sectionTitle = document.getElementById('specialization-section-title');
+
+            // Get all specialization cards
+            const allSpecializationCards = document.querySelectorAll('.specialization-card');
+
+            // Hide all specialization cards initially
+            allSpecializationCards.forEach(card => {
+                card.classList.add('hidden');
+            });
+
+            let displayTitle = "اختر التخصص المناسب لك"; // Default title
+
+            if (category === 'doctors') {
+                document.querySelectorAll('.doctor-specialization').forEach(card => {
+                    card.classList.remove('hidden');
+                });
+                displayTitle = "تخصصات الأطباء المتاحة";
+            } else if (category === 'teachers') {
+                document.querySelectorAll('.teacher-specialization').forEach(card => {
+                    card.classList.remove('hidden');
+                });
+                displayTitle = "تخصصات المعلمين المتاحة";
+            } else if (category === 'artisans') {
+                document.querySelectorAll('.artisan-specialization').forEach(card => {
+                    card.classList.remove('hidden');
+                });
+                displayTitle = "تخصصات الحرفيين المتاحة";
+            } else {
+                // This block was added back: displays all if no specific category or an unknown category is found
+                document.querySelectorAll('.specialization-card').forEach(card => {
+                    card.classList.remove('hidden');
+                });
+                displayTitle = "جميع التخصصات المتاحة"; // Title if all are shown
+            }
+            sectionTitle.textContent = displayTitle; // Update the title dynamically
+        });
+    </script>
+</body>
+</html>

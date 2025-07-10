@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hagzi - منصة حجز مواعيد</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --color-dark-green: #2F5249;
+      --color-mid-green: #a7c1a8;
+      --color-light-green: #d1d8be;
+      --color-very-light: #f6f6f2;
+      --color-text-dark: #3b3b4f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Noto Kufi Arabic', sans-serif;
+      background-color: var(--color-very-light);
+      color: var(--color-text-dark);
+      direction: rtl;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      max-width: 1300px;
+      margin: 12px auto;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--color-text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      font-size: 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(167, 193, 168, 0.3);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 48px;
+      color: var(--color-dark-green);
+      letter-spacing: 0.08em;
+      user-select: none;
+      transition: transform 0.4s ease, text-shadow 0.4s ease;
+      cursor: pointer;
+    }
+
+    .logo:hover {
+      transform: scale(1.05) rotate(-1deg);
+      text-shadow: 0 2px 4px rgba(167, 193, 168, 0.4);
+    }
+
+    nav {
+      flex-grow: 1;
+      margin: 0 30px;
+      position: relative;
+    }
+
+    #menu-toggle {
+      display: none;
+    }
+
+    .menu-icon {
+      display: none;
+      font-size: 2.5rem;
+      cursor: pointer;
+      color: var(--color-text-dark);
+      user-select: none;
+    }
+
+    .links {
+      display: flex;
+      justify-content: flex-start;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .link {
+      text-decoration: none;
+      color: var(--color-dark-green);
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 10px 22px;
+      border-radius: 24px;
+      transition: background-color 0.3s ease;
+    }
+
+    .link:hover {
+      background-color: var(--color-mid-green);
+      color: var(--color-very-light);
+    }
+
+    .InputContainer {
+      max-width: 320px;
+      flex-shrink: 0;
+    }
+
+    .input {
+      width: 100%;
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      border-radius: 48px;
+      border: 2px solid var(--color-mid-green);
+      outline: none;
+      font-family: 'Noto Kufi Arabic', sans-serif;
+      color: var(--color-text-dark);
+      direction: rtl;
+      transition: border-color 0.3s ease;
+    }
+
+    .input::placeholder {
+      color: var(--color-mid-green);
+      font-weight: 400;
+    }
+
+    .input:focus {
+      border-color: var(--color-mid-green);
+      box-shadow: 0 0 8px rgba(167, 193, 168, 0.7);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 45px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-bottom: 55px;
+    }
+
+    .title .text {
+      max-width: 600px;
+      font-size: 1.3rem;
+      line-height: 1.4;
+      color: var(--color-text-dark);
+      font-weight: 100;
+    }
+
+    .title .arabic-title {
+      color: var(--color-text-dark);
+      margin-top: 40px;
+    }
+
+    .p1 {
+      font-weight: bold;
+    }
+
+    .p2 {
+      font-weight: 200;
+      font-size: 40px;
+    }
+
+    .social-section {
+      text-align: center;
+      padding: 30px 15px;
+      margin: 50px auto 80px;
+      max-width: 480px;
+      background-color: var(--color-light-green);
+      border-radius: 25px;
+      box-shadow: 0 6px 18px rgba(129, 154, 145, 0.12);
+    }
+
+    .social-title {
+      font-size: 1.6rem;
+      color: var(--color-dark-green);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .social-subtitle {
+      font-size: 1rem;
+      color: var(--color-text-dark);
+      margin-bottom: 20px;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: nowrap;
+    }
+
+    .social-icon {
+      font-size: 1.4rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      background-color: var(--color-mid-green);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .social-icon.facebook {
+      background-color: #3b5998;
+    }
+
+    .social-icon.instagram {
+      background-color: #e1306c;
+    }
+
+    .social-icon.whatsapp {
+      background-color: #25d366;
+    }
+
+    .social-icon.linkedin {
+      background-color: #0077b5;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.15);
+      filter: brightness(1.1);
+    }
+
+    @keyframes floatUpDown {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    .book {
+      max-width: 220px;
+      height: auto;
+      filter: drop-shadow(1px 2px 3px rgba(129, 154, 145, 0.25));
+      animation: floatUpDown 3s ease-in-out infinite;
+    }
+
+    .cards {
+      display: flex;
+      gap: 35px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    .cardHTML,
+    .cardCSS,
+    .cardJS {
+      background-color: var(--color-light-green);
+      border-radius: 35px;
+      padding: 28px 22px;
+      width: 320px;
+      box-shadow: 0 8px 22px rgba(129, 154, 145, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--color-text-dark);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .cardHTML:hover,
+    .cardCSS:hover,
+    .cardJS:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 14px 34px rgba(129, 154, 145, 0.25);
+    }
+
+    .cardHTML {
+      background-color: #d1d8be;
+    }
+
+    .cardHTML:hover {
+      background-color: #a7c1a8;
+    }
+
+    .cardHTML:hover .html-logo {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .cardCSS {
+      background-color: #eeeefe;
+    }
+
+    .cardCSS:hover {
+      background-color: #c4f4eb;
+    }
+
+    .cardCSS:hover .css-logo {
+      transform: scale(1.1) rotate(-5deg);
+    }
+
+    .cardJS {
+      background-color: #819a91;
+      color: white;
+    }
+
+    .cardJS:hover {
+      background-color: #6f837a;
+    }
+
+    .cardJS:hover .js-logo {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .cardHTML h1,
+    .cardCSS h1,
+    .cardJS h1 {
+      margin-bottom: 22px;
+      font-size: 1.85rem;
+      font-weight: 800;
+    }
+
+    .cardHTML p,
+    .cardCSS p,
+    .cardJS p {
+      font-size: 1.1rem;
+      margin-bottom: 28px;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .html-logo,
+    .css-logo,
+    .js-logo {
+      width: 110px;
+      height: auto;
+      filter: drop-shadow(1px 3px 4px rgba(129, 154, 145, 0.2));
+      transition: transform 0.3s ease;
+    }
+
+    .about-section {
+      background-color: #ffffff;
+      border: 1px solid #dce5dc;
+      border-radius: 20px;
+      padding: 28px 26px;
+      max-width: 720px;
+      margin: 50px auto 60px;
+      box-shadow: 0 6px 20px rgba(129, 154, 145, 0.12);
+      text-align: center;
+    }
+
+    .about-title {
+      font-size: 1.8rem;
+      color: var(--color-dark-green);
+      margin-bottom: 18px;
+      font-weight: 800;
+    }
+
+    .about-subtitle {
+      font-size: 1.3rem;
+      color: var(--color-text-dark);
+      margin-top: 28px;
+      font-weight: 700;
+    }
+
+    .about-text {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--color-text-dark);
+      margin-bottom: 10px;
+    }
+
+    main>* {
+      margin-bottom: 70px;
+    }
+
+    .footer {
+      background: var(--color-dark-green);
+      color: var(--color-very-light);
+      text-align: center;
+      padding: 28px 22px;
+      font-size: 0.9rem;
+      user-select: none;
+      margin-top: auto;
+      line-height: 1.6;
+    }
+
+    .footer a {
+      color: var(--color-light-green);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* --- Media Queries for Responsiveness --- */
+    /* شاشات صغيرة (الهواتف) */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column; /* نخلي العناصر يتراصن فوق بعضهن */
+        align-items: center; /* نوسّط العناصر */
+        padding: 15px; /* تباعد داخلي أكبر */
+      }
+
+      .logo {
+        font-size: 38px; /* نصغر حجم الشعار شوي */
+        margin-bottom: 15px; /* نباعده عن باقي العناصر */
+      }
+
+      .menu-icon {
+        display: block; /* نظهر أيقونة القائمة (الثلاث شرطات) */
+        position: absolute; /* نثبتها باش تكون ديما في نفس المكان */
+        left: 20px; /* نحطها على اليسار */
+        top: 20px; /* ننزلها شوي من فوق */
+      }
+
+      nav {
+        margin: 0; /* نلغي الهامش على ناف */
+        width: 100%; /* نخليها تاخذ عرض الشاشة بالكامل */
+      }
+
+      .links {
+        flex-direction: column; /* نخلي الروابط يتراصن فوق بعضهن */
+        display: none; /* نخفيهن في البداية، ويظهرن لما نضغط على الأيقونة */
+        width: 100%; /* ياخذن عرض الشاشة بالكامل */
+        align-items: center; /* نوسّطهن */
+        gap: 15px; /* نقلل التباعد بين الروابط */
+        padding-top: 15px; /* تباعد من فوق للروابط */
+      }
+
+      #menu-toggle:checked ~ .links {
+        display: flex; /* نظهر الروابط لما تكون القائمة مفتوحة */
+      }
+
+      .link {
+        width: 90%; /* نخلي الروابط تاخذ عرض أكبر */
+        text-align: center; /* نوسّط النص متاع الروابط */
+        padding: 12px; /* نكبر حجم الضغط على الرابط */
+        font-size: 1rem; /* نصغر الخط شوي */
+      }
+
+      .InputContainer {
+        width: 90%; /* نخلي صندوق البحث ياخذ عرض أكبر */
+        max-width: none; /* نلغي أقصى عرض ليه */
+        margin-top: 20px; /* نباعده عن اللي فوقه */
+      }
+
+      .input {
+        padding: 12px 25px; /* نصغر تباعد صندوق البحث */
+        font-size: 1rem; /* نصغر خط الكتابة فيه */
+      }
+
+      .title {
+        flex-direction: column; /* نخلي عنوان الصفحة والصورة يتراصن فوق بعضهن */
+        text-align: center; /* نوسّط النص */
+        gap: 20px; /* نقلل التباعد بينهن */
+      }
+
+      .title .text {
+        font-size: 1.1rem; /* نصغر حجم الخط الرئيسي شوي */
+      }
+
+      .title .p1 {
+        font-size: 32px; /* نصغر الخط الرئيسي أكثر */
+      }
+
+      .title .p2 {
+        font-size: 20px; /* نصغر الخط الثاني أكثر */
+      }
+
+      .book {
+        max-width: 180px; /* نصغر حجم الصورة أكثر */
+      }
+
+      .cards {
+        flex-direction: column; /* نخلي الكروت يتراصن فوق بعضهن */
+        align-items: center; /* نوسّطهن */
+        gap: 25px; /* نقلل التباعد بين الكروت */
+      }
+
+      .cardHTML,
+      .cardCSS,
+      .cardJS {
+        width: 90%; /* نخلي الكرت ياخذ عرض أكبر من الشاشة */
+        padding: 20px; /* نقلل التباعد الداخلي للكروت */
+      }
+
+      .cardHTML h1,
+      .cardCSS h1,
+      .cardJS h1 {
+        font-size: 1.6rem; /* نصغر خط عناوين الكروت */
+      }
+
+      .cardHTML p,
+      .cardCSS p,
+      .cardJS p {
+        font-size: 1rem; /* نصغر خط وصف الكروت */
+      }
+
+      .html-logo,
+      .css-logo,
+      .js-logo {
+        width: 90px; /* نصغر حجم اللوجوهات في الكروت */
+      }
+
+      .about-section {
+        padding: 20px; /* نقلل التباعد الداخلي لقسم "من نحن" */
+        margin: 40px auto 50px; /* نقلل الهوامش */
+      }
+
+      .about-title {
+        font-size: 1.6rem; /* نصغر خط عنوان "من نحن" */
+      }
+
+      .about-subtitle {
+        font-size: 1.1rem; /* نصغر خط العنوان الفرعي لـ "من نحن" */
+      }
+
+      .about-text {
+        font-size: 0.9rem; /* نصغر خط النصوص في "من نحن" */
+      }
+
+      .social-section {
+        padding: 25px 10px; /* نقلل التباعد الداخلي لقسم التواصل الاجتماعي */
+        margin: 40px auto 60px; /* نقلل الهوامش */
+      }
+
+      .social-title {
+        font-size: 1.4rem; /* نصغر خط عنوان التواصل الاجتماعي */
+      }
+
+      .social-subtitle {
+        font-size: 0.9rem; /* نصغر خط العنوان الفرعي للتواصل الاجتماعي */
+      }
+
+      .social-icons {
+        flex-wrap: wrap; /* نخلي الأيقونات يتراصن في أكثر من سطر لو الشاشة صغيرة هلبا */
+        gap: 15px; /* نقلل التباعد بين الأيقونات */
+      }
+
+      .social-icon {
+        width: 40px; /* نصغر حجم أيقونات التواصل الاجتماعي */
+        height: 40px; /* نصغر حجم أيقونات التواصل الاجتماعي */
+        font-size: 1.2rem; /* نصغر حجم الأيقونة نفسها */
+      }
+
+      .footer {
+        padding: 20px 15px; /* نقلل تباعد الفوتر */
+        font-size: 0.8rem; /* نصغر خط الفوتر */
+      }
+    }
+
+    /* شاشات متوسطة (التابلت) */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      header {
+        padding: 15px 30px; /* نزيد تباعد الهيدر شوي */
+      }
+
+      .logo {
+        font-size: 42px; /* نصغر حجم الشعار شوي */
+      }
+
+      .links {
+        gap: 20px; /* نقلل التباعد بين الروابط */
+      }
+
+      .link {
+        font-size: 1rem; /* نصغر خط الروابط شوي */
+        padding: 8px 18px; /* نصغر حجم الضغط على الرابط */
+      }
+
+      .InputContainer {
+        max-width: 280px; /* نصغر أقصى عرض لصندوق البحث */
+      }
+
+      .input {
+        padding: 12px 25px; /* نصغر تباعد صندوق البحث */
+        font-size: 1rem; /* نصغر خط الكتابة فيه */
+      }
+
+      .title .text {
+        font-size: 1.2rem; /* نصغر حجم الخط الرئيسي شوي */
+      }
+
+      .title .p1 {
+        font-size: 36px; /* نصغر الخط الرئيسي أكثر */
+      }
+
+      .title .p2 {
+        font-size: 22px; /* نصغر الخط الثاني أكثر */
+      }
+
+      .book {
+        max-width: 200px; /* نصغر حجم الصورة شوي */
+      }
+
+      .cards {
+        gap: 25px; /* نقلل التباعد بين الكروت */
+      }
+
+      .cardHTML,
+      .cardCSS,
+      .cardJS {
+        width: 280px; /* نصغر عرض الكرت شوي */
+        padding: 25px 20px; /* نقلل التباعد الداخلي للكروت */
+      }
+
+      .html-logo,
+      .css-logo,
+      .js-logo {
+        width: 100px; /* نصغر حجم اللوجوهات في الكروت */
+      }
+
+      .about-section {
+        padding: 25px; /* نقلل التباعد الداخلي لقسم "من نحن" */
+      }
+
+      .social-section {
+        padding: 28px 12px; /* نقلل التباعد الداخلي لقسم التواصل الاجتماعي */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header dir="rtl">
+    <div class="logo" dir="ltr">Hagzi</div>
+    <nav>
+      <input type="checkbox" id="menu-toggle" />
+      <label for="menu-toggle" class="menu-icon">☰</label>
+      <div class="links" id="nav-links">
+        <a href="login.html" class="link" id="login-link"> تسجيل دخول</a>
+        <a href="#about-section" class="link">من نحن</a>
+        <a href="#social-section" class="link">المساعدة</a>
+      </div>
+
+    </nav>
+    <div class="InputContainer">
+      <input placeholder="ابحث عن مهني أو تخصص..." id="input" class="input" name="text" type="text" dir="rtl" />
+    </div>
+  </header>
+
+  <main dir="rtl">
+    <div class="title">
+      <div dir="rtl" class="text">
+        <p style="font-size: 21px;">احجز موعدك بكل سهولة مع أفضل المهنيين في مجالات متنوعة</p>
+        <p class="arabic-title p1" dir="rtl" style="font-size: 40px">
+          منصة حجز المواعيد
+        </p>
+        <p class="arabic-title p2" dir="rtl" style="font-size: 25px;">
+          اختر التخصص، واعرض المهنيين المتاحين، واحجز وقتك
+        </p>
+      </div>
+      <div>
+        <img class="book" height="200px" width="200px" src="images/medical-appointment.png" alt="حجز مواعيد" />
+      </div>
+    </div>
+
+    <div class="cards">
+      <a href="select-specialization.html?category=doctors" class="cardHTML">
+        <h1>الأطباء</h1>
+        <p class="p-html">
+          احجز مع أطباء في تخصصات متعددة مثل الباطنية، العظام، الجلدية، وغيرهم.
+        </p>
+        <img class="html-logo" height="100px" src="images/doctor.png" alt="أطباء" />
+      </a>
+      <a href="select-specialization.html?category=teachers" class="cardCSS">
+        <h1>المعلمين</h1>
+        <p class="p-css">
+          مدرسون محترفون في مواد متنوعة كرياضيات، فيزياء، لغة عربية وغيرها.
+        </p>
+        <img class="css-logo" height="100px" src="images/teach.png" alt="معلمين" />
+      </a>
+      <a href="select-specialization.html?category=artisans" class="cardJS">
+        <h1>الحرفيون</h1>
+        <p class="p-js">
+          حرفيون متخصصون في أعمال الصيانة، الكهرباء، النجارة، والتصليحات المنزلية.
+        </p>
+        <img class="js-logo" height="120px" src="images/artisan (1).png" alt="حرفيون" />
+      </a>
+    </div>
+
+    <section id="about-section" class="about-section">
+      <h2 class="about-title">منصتك الذكية لحجز المواعيد</h2>
+      <p class="about-text">
+        نوفر لك وسيلة موثوقة وسهلة لحجز المواعيد مع أفضل المهنيين في مجالات الطب، التعليم، والحرف. كل ما تحتاجه في مكان
+        واحد، وبخطوات بسيطة.
+      </p>
+      <h3 class="about-subtitle">لماذا نحن؟</h3>
+      <p class="about-text">
+        تجربة استخدام سلسة، ملفات تعريف واضحة، مواعيد محدثة، ودعم متواصل. منصتنا مصممة لتمنحك التحكم الكامل بوقتك.
+      </p>
+    </section>
+
+    <section id="social-section" class="social-section">
+      <h2 class="social-title">تواصل معنا</h2>
+      <p class="social-subtitle">تابعنا على وسائل التواصل الاجتماعي</p>
+      <div class="social-icons">
+        <a href="er (2).html" class="social-icon facebook" title="فيسبوك">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="er (2).html" class="social-icon instagram" title="إنستغرام">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="er (2).html" class="social-icon whatsapp" title="واتساب">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="er (2).html" class="social-icon linkedin" title="لينكدإن">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div class="footer">
+    <p>
+      منصة حجز المواعيد تم تطويرها بإتقان وجهود مميزة من فريق المهندسين: زينب البشير، ريان عبد الوهاب، وياسمين
+      العلام.<br />
+      جميع الحقوق محفوظة © 2025
+    </p>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hideSections = urlParams.get('hideSections') === '1';
+
+      const about = document.getElementById('about-section');
+      const social = document.getElementById('social-section');
+      const navLinks = document.getElementById('nav-links');
+      const loginLink = document.getElementById('login-link');
+      const menuToggle = document.getElementById('menu-toggle');
+
+      if (hideSections) {
+        // فقط إخفاء رابط تسجيل الدخول
+        if (loginLink) loginLink.style.display = 'none';
+
+        // إضافة زر تسجيل خروج بدل تسجيل الدخول
+        if (navLinks && !document.getElementById('logout-link')) {
+          const logoutLink = document.createElement('a');
+          logoutLink.href = 'index.html'; // صفحة عادية بدون معطيات
+          logoutLink.className = 'link';
+          logoutLink.id = 'logout-link';
+          logoutLink.textContent = 'تسجيل خروج';
+
+          navLinks.appendChild(logoutLink);
+        }
+
+        // إضافة رابط "مواعيدي" للعملاء
+        if (navLinks && !document.getElementById('my-appointments-link')) {
+          const myAppointmentsLink = document.createElement('a');
+          myAppointmentsLink.href = 'my-appointments.html'; // اسم الملف الجديد
+          myAppointmentsLink.className = 'link';
+          myAppointmentsLink.id = 'my-appointments-link';
+          myAppointmentsLink.textContent = 'مواعيدي';
+
+          // إضافة رابط مواعيدي قبل رابط "من نحن"
+          const aboutLink = document.querySelector('a[href="#about-section"]');
+          if (aboutLink) {
+            navLinks.insertBefore(myAppointmentsLink, aboutLink);
+          } else {
+            navLinks.appendChild(myAppointmentsLink);
+          }
+        }
+      }
+
+      // Toggle mobile menu visibility
+      menuToggle.addEventListener('change', () => {
+        const links = document.getElementById('nav-links');
+        if (menuToggle.checked) {
+          links.style.display = 'flex';
+        } else {
+          links.style.display = 'none';
+        }
+      });
+      // Close menu when a link is clicked (for better mobile UX)
+      navLinks.querySelectorAll('.link').forEach(link => {
+        link.addEventListener('click', () => {
+          if (menuToggle.checked) {
+            menuToggle.checked = false; // Uncheck the toggle
+            navLinks.style.display = 'none'; // Hide the menu
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
